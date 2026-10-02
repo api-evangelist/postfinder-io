@@ -1,0 +1,27 @@
+generated: '2026-10-02'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/postfinder-io-openapi.json
+format: rfc9457
+envelope:
+  media_type: application/problem+json
+  schema: Problem
+coverage:
+  operations: 12
+  statuses_declared: 2
+problems:
+- status: 400
+  title: Bad Request
+  description: locality is missing or not a number.
+  operations: 2
+  media_types:
+  - application/problem+json
+  schema: Problem
+- status: 404
+  title: Not Found
+  description: No such country.
+  operations: 7
+  media_types:
+  - application/problem+json
+  schema: Problem

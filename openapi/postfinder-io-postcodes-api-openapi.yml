@@ -1,0 +1,279 @@
+openapi: 3.2.0
+info:
+  title: PostFinder Postcodes API
+  version: 1.0.0
+  description: 'The directory behind postfinder.io, as an API: post offices, post boxes, parcel lockers, drop off and collection points in Australia, New Zealand, the United Kingdom, the United States and Canada, and the suburbs and postcodes they sit in.'
+  contact:
+    name: PostFinder
+    url: https://postfinder.io/en/contact/
+servers:
+- url: https://api.postfinder.io
+  description: Production
+security: []
+tags:
+- name: Postcodes
+  description: Postcode lookup, in both directions.
+paths:
+  /v1/countries/{country}/postcodes:
+    get:
+      tags:
+      - Postcodes
+      operationId: postcodes
+      summary: Every postcode in a country, grouped by region
+      description: 'The whole index in one response, which is how a postcode list is read and what makes it cacheable. Large for a big country: fetch it once and keep it rather than asking per keystroke.'
+      parameters:
+      - name: country
+        in: path
+        required: true
+        description: 'Country slug as the site''s URLs use it: australia, new-zealand, united-kingdom, united-states, canada.'
+        example: australia
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The index.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostcodesResponse'
+        '404':
+          description: No postcodes held for that country.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /v1/countries/{country}/postcodes/{postcode}:
+    get:
+      tags:
+      - Postcodes
+      operationId: postcodeDetail
+      summary: Resolve one postcode to the suburbs it covers
+      description: A postcode is not a suburb. 3058 is Coburg, Coburg North and Merlynston, and an address in any of them is written with the same four digits, so this returns all of them, busiest first.
+      parameters:
+      - name: country
+        in: path
+        required: true
+        description: 'Country slug as the site''s URLs use it: australia, new-zealand, united-kingdom, united-states, canada.'
+        example: australia
+        schema:
+          type: string
+      - name: postcode
+        in: path
+        required: true
+        description: Three to five digits.
+        example: '3058'
+        schema:
+          type: string
+          pattern: ^[0-9]{3,5}$
+      responses:
+        '200':
+          description: The suburbs this postcode covers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostcodeResponse'
+        '404':
+          description: Not a postcode, or nothing is filed under it.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+components:
+  schemas:
+    RegionPostcodes:
+      type: object
+      description: One region's postcodes.
+      properties:
+        region:
+          $ref: '#/components/schemas/Region'
+        entries:
+          type: array
+          description: Its suburbs and their postcodes.
+          items:
+            $ref: '#/components/schemas/PostcodeEntry'
+      required:
+      - region
+      - entries
+      additionalProperties: false
+    Problem:
+      type: object
+      description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
+      properties:
+        type:
+          type: string
+          description: Always about:blank.
+        title:
+          type: string
+          description: What went wrong, in a few words.
+        status:
+          type: integer
+          description: The HTTP status, repeated.
+        detail:
+          type: string
+          description: What to do about it. May be empty.
+      required:
+      - type
+      - title
+      - status
+      - detail
+      additionalProperties: false
+    LocalityLink:
+      type: object
+      description: Another suburb, with enough to link to its page.
+      properties:
+        country:
+          type: string
+          description: Country slug.
+        region:
+          type: string
+          description: Region slug.
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        name:
+          type: string
+          description: The suburb's name.
+        place_count:
+          type: integer
+          description: Locations held.
+        distance_km:
+          type: number
+          description: Distance in kilometres from the suburb asked about; 0 where distance is not the ordering.
+      required:
+      - country
+      - region
+      - slug
+      - name
+      - place_count
+      - distance_km
+      additionalProperties: false
+    PostcodeResponse:
+      type: object
+      description: One postcode.
+      properties:
+        data:
+          $ref: '#/components/schemas/PostcodeDetail'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
+      additionalProperties: false
+    Region:
+      type: object
+      description: A state, province or other first level division.
+      properties:
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        code:
+          type: string
+          description: 'The short code, where the country has them: VIC, NSW. Absent where it has none.'
+        name:
+          type: string
+          description: The region's name.
+      required:
+      - slug
+      - name
+      additionalProperties: false
+    PostcodesResponse:
+      type: object
+      description: The postcode index.
+      properties:
+        data:
+          $ref: '#/components/schemas/PostcodeIndex'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
+      additionalProperties: false
+    Country:
+      type: object
+      description: A country the directory covers.
+      properties:
+        iso2:
+          type: string
+          description: ISO 3166-1 alpha-2 code.
+        slug:
+          type: string
+          description: 'The country as postfinder.io''s URLs write it: australia, new-zealand.'
+        name:
+          type: string
+          description: The country's name.
+      required:
+      - iso2
+      - slug
+      - name
+      additionalProperties: false
+    PostcodeIndex:
+      type: object
+      description: Every postcode in a country, grouped by region.
+      properties:
+        country:
+          $ref: '#/components/schemas/Country'
+        total:
+          type: integer
+          description: How many suburbs are listed.
+        regions:
+          type: array
+          description: By region.
+          items:
+            $ref: '#/components/schemas/RegionPostcodes'
+      required:
+      - country
+      - total
+      - regions
+      additionalProperties: false
+    PostcodeEntry:
+      type: object
+      description: A suburb and the postcode people write for it.
+      properties:
+        postcode:
+          type: string
+          description: The postcode.
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        name:
+          type: string
+          description: The suburb's name.
+        place_count:
+          type: integer
+          description: Locations held.
+      required:
+      - postcode
+      - slug
+      - name
+      - place_count
+      additionalProperties: false
+    PostcodeDetail:
+      type: object
+      description: One postcode and the suburbs it covers.
+      properties:
+        country:
+          $ref: '#/components/schemas/Country'
+        region:
+          $ref: '#/components/schemas/Region'
+        postcode:
+          type: string
+          description: The postcode.
+        total:
+          type: integer
+          description: Places across every suburb it covers.
+        localities:
+          type: array
+          description: The suburbs it covers, busiest first.
+          items:
+            $ref: '#/components/schemas/LocalityLink'
+      required:
+      - country
+      - region
+      - postcode
+      - total
+      - localities
+      additionalProperties: false

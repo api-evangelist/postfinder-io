@@ -1,0 +1,194 @@
+openapi: 3.2.0
+info:
+  title: PostFinder Nearby API
+  version: 1.0.0
+  description: 'The directory behind postfinder.io, as an API: post offices, post boxes, parcel lockers, drop off and collection points in Australia, New Zealand, the United Kingdom, the United States and Canada, and the suburbs and postcodes they sit in.'
+  contact:
+    name: PostFinder
+    url: https://postfinder.io/en/contact/
+servers:
+- url: https://api.postfinder.io
+  description: Production
+security: []
+tags:
+- name: Nearby
+  description: 'What is nearest a coordinate: the question most callers are asking.'
+paths:
+  /v1/nearby:
+    get:
+      tags:
+      - Nearby
+      operationId: nearby
+      summary: The nearest places of one kind to a coordinate
+      description: '"Where is the nearest post office": up to 30 places within 50 km, nearest first. Not cached, because every coordinate is different.'
+      parameters:
+      - name: lat
+        in: query
+        required: true
+        description: Latitude.
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+        example: -37.7404
+      - name: lng
+        in: query
+        required: true
+        description: Longitude.
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+        example: 144.9633
+      - name: category
+        in: query
+        required: true
+        description: The kind of place.
+        schema:
+          type: string
+          enum:
+          - post-offices
+          - post-boxes
+          - express-post-boxes
+          - parcel-lockers
+          - drop-off-points
+          - collection-points
+        example: post-offices
+      - name: country
+        in: query
+        required: true
+        description: Country slug.
+        schema:
+          type: string
+        example: australia
+      responses:
+        '200':
+          description: The nearest places.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NearbyResponse'
+        '400':
+          description: A coordinate out of range, or a missing or unknown category or country.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+components:
+  schemas:
+    Problem:
+      type: object
+      description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
+      properties:
+        type:
+          type: string
+          description: Always about:blank.
+        title:
+          type: string
+          description: What went wrong, in a few words.
+        status:
+          type: integer
+          description: The HTTP status, repeated.
+        detail:
+          type: string
+          description: What to do about it. May be empty.
+      required:
+      - type
+      - title
+      - status
+      - detail
+      additionalProperties: false
+    NearbyResponse:
+      type: object
+      description: The nearest places, nearest first.
+      properties:
+        data:
+          type: array
+          description: Up to 30 places within 50 km.
+          items:
+            $ref: '#/components/schemas/NearbyPlace'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
+      additionalProperties: false
+    NearbyPlace:
+      type: object
+      description: A place, with where it sits and how far it is from the point asked about.
+      properties:
+        public_id:
+          type: string
+          description: 'The place''s permanent id: minted once, never reused, and the stable end of its URL.'
+          pattern: ^[a-z2-7]{8}$
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        name:
+          type: string
+          description: The name on the door.
+        brand:
+          type: string
+          description: 'Which operator runs it, as a key: auspost, parcelpoint, nzpost.'
+        category:
+          type: string
+          description: What kind of place it is.
+          enum:
+          - post-offices
+          - post-boxes
+          - express-post-boxes
+          - parcel-lockers
+          - drop-off-points
+          - collection-points
+        address:
+          type: string
+          description: 'The street address, where the source gives one. Absent otherwise: most post boxes have none.'
+        lat:
+          type: number
+          description: Latitude.
+        lng:
+          type: number
+          description: Longitude.
+        hours:
+          type: object
+          description: 'Opening hours as the source publishes them, with a tz, the source''s own text, and a weekly map of day to open and close pairs. Open by design: sources carry extra keys (temporary closures, a counter''s separate hatch hours) and a reader should keep what it does not know.'
+          additionalProperties: true
+        attributes:
+          type: object
+          description: 'Whatever else the source says: phone, services, what can be sent or collected. Open by design, because each source names its own keys; read the ones you need.'
+          additionalProperties: true
+        last_verified_at:
+          type: string
+          description: When a source last confirmed the record.
+          format: date-time
+        closed_at:
+          type: string
+          description: When the place was recorded as closed. Only a place page shows a closed place.
+          format: date-time
+        country:
+          type: string
+          description: Country slug.
+        region:
+          type: string
+          description: Region slug.
+        locality:
+          type: string
+          description: Suburb slug.
+        distance_km:
+          type: number
+          description: Straight line distance in kilometres.
+      required:
+      - public_id
+      - slug
+      - name
+      - brand
+      - category
+      - lat
+      - lng
+      - country
+      - region
+      - locality
+      - distance_km
+      additionalProperties: false

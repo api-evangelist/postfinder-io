@@ -1,0 +1,220 @@
+generated: '2026-10-02'
+method: derived
+generator: derive-vocabulary.py
+source: openapi/postfinder-io-openapi.json
+vocabulary:
+  name: Postfinder Domain Vocabulary
+  description: 'Terms declared by Postfinder''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-02'
+  terms:
+  - term: Nearby
+    definition: 'What is nearest a coordinate: the question most callers are asking.'
+    tags:
+    - Resource Group
+    source: openapi/postfinder-io-openapi.json
+  - term: Search
+    definition: Turn what somebody typed into a suburb or a place.
+    tags:
+    - Resource Group
+    source: openapi/postfinder-io-openapi.json
+  - term: Places
+    definition: 'The directory as the site''s pages have it: countries, regions, suburbs and places.'
+    tags:
+    - Resource Group
+    source: openapi/postfinder-io-openapi.json
+  - term: Postcodes
+    definition: Postcode lookup, in both directions.
+    tags:
+    - Resource Group
+    source: openapi/postfinder-io-openapi.json
+  - term: Reference
+    definition: This document.
+    tags:
+    - Resource Group
+    source: openapi/postfinder-io-openapi.json
+  - term: Problem
+    definition: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/Problem
+  - term: Country
+    definition: A country the directory covers.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/Country
+  - term: Region
+    definition: A state, province or other first level division.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/Region
+  - term: Locality
+    definition: A suburb or town.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/Locality
+  - term: Place
+    definition: One post office, post box, parcel locker, drop off or collection point.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/Place
+  - term: NearbyPlace
+    definition: A place, with where it sits and how far it is from the point asked about.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/NearbyPlace
+  - term: CountrySummary
+    definition: A country and how much the directory holds for it.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/CountrySummary
+  - term: RegionSummary
+    definition: A region and how much it holds.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/RegionSummary
+  - term: LocalitySummary
+    definition: A suburb in a region's list.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/LocalitySummary
+  - term: Facet
+    definition: One value and how many places have it.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/Facet
+  - term: LocalityLink
+    definition: Another suburb, with enough to link to its page.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/LocalityLink
+  - term: PlaceLink
+    definition: Another place close by, with enough to link to its page.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/PlaceLink
+  - term: CountryDetail
+    definition: A country and its regions.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/CountryDetail
+  - term: RegionDetail
+    definition: A region and a page of its suburbs.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/RegionDetail
+  - term: CategoryHub
+    definition: 'One category across a country: counts per region and the busiest suburbs, not a list of every place.'
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/CategoryHub
+  - term: PostcodeEntry
+    definition: A suburb and the postcode people write for it.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/PostcodeEntry
+  - term: RegionPostcodes
+    definition: One region's postcodes.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/RegionPostcodes
+  - term: PostcodeIndex
+    definition: Every postcode in a country, grouped by region.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/PostcodeIndex
+  - term: PostcodeDetail
+    definition: One postcode and the suburbs it covers.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/PostcodeDetail
+  - term: LocalityDetail
+    definition: 'A suburb: every place in it, with facet counts and its neighbours.'
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/LocalityDetail
+  - term: ReviewSummary
+    definition: What visitors said, summarised.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/ReviewSummary
+  - term: Review
+    definition: One approved review.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/Review
+  - term: Reviews
+    definition: 'Approved reviews: a summary and the most recent.'
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/Reviews
+  - term: Photo
+    definition: An approved photo. Fetch it at https://postfinder.io/media/{id}.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/Photo
+  - term: PlaceDetail
+    definition: One place in full, with where it sits, what is close by, reviews and photos.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/PlaceDetail
+  - term: SearchHit
+    definition: A suburb or a place matching what was typed, with enough to link to its page.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/SearchHit
+  - term: SearchResponse
+    definition: Matches, best first.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/SearchResponse
+  - term: CountriesResponse
+    definition: Every country covered.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/CountriesResponse
+  - term: CountryResponse
+    definition: One country.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/CountryResponse
+  - term: RegionResponse
+    definition: One region.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/RegionResponse
+  - term: CategoryResponse
+    definition: One category across a country.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/CategoryResponse
+  - term: PostcodesResponse
+    definition: The postcode index.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/PostcodesResponse
+  - term: PostcodeResponse
+    definition: One postcode.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/PostcodeResponse
+  - term: LocalityResponse
+    definition: One suburb.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/LocalityResponse
+  - term: PlacesResponse
+    definition: Places in a suburb.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/PlacesResponse
+  - term: PlaceResponse
+    definition: One place.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/PlaceResponse
+  - term: NearbyResponse
+    definition: The nearest places, nearest first.
+    tags:
+    - Object
+    source: openapi/postfinder-io-openapi.json#/components/schemas/NearbyResponse

@@ -1,0 +1,1957 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PostFinder API",
+    "version": "1.0.0",
+    "description": "The directory behind postfinder.io, as an API: post offices, post boxes, parcel lockers, drop off and collection points in Australia, New Zealand, the United Kingdom, the United States and Canada, and the suburbs and postcodes they sit in.\n\nIt answers the same questions the website answers, from the same data. No key is needed and there is nothing to buy.\n\n**Attribution travels with the data.** Locations come from OpenStreetMap, under the ODbL, and suburbs and postcodes from GeoNames, under CC BY 4.0. If you publish what you get back, you carry those credits with it. The [sources page](https://postfinder.io/en/legal/) names each one.\n\n**Please be gentle.** Responses are cacheable and a client that debounces its typing costs almost nothing. Around a thousand requests a month from one address is the guideline; if you need more, [say what you are building](https://postfinder.io/en/contact/) and we will very likely help. The [acceptable use policy](https://postfinder.io/en/acceptable-use/) has the detail.",
+    "contact": {
+      "name": "PostFinder",
+      "url": "https://postfinder.io/en/contact/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.postfinder.io",
+      "description": "Production"
+    }
+  ],
+  "security": [],
+  "tags": [
+    {
+      "name": "Nearby",
+      "description": "What is nearest a coordinate: the question most callers are asking."
+    },
+    {
+      "name": "Search",
+      "description": "Turn what somebody typed into a suburb or a place."
+    },
+    {
+      "name": "Places",
+      "description": "The directory as the site's pages have it: countries, regions, suburbs and places."
+    },
+    {
+      "name": "Postcodes",
+      "description": "Postcode lookup, in both directions."
+    },
+    {
+      "name": "Reference",
+      "description": "This document."
+    }
+  ],
+  "paths": {
+    "/v1/search": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "operationId": "search",
+        "summary": "Suggest suburbs and places as someone types",
+        "description": "The site's own search box, as an endpoint.\n\nUnder two characters answers an empty list rather than matching most of the table; that is an answer, not an error. Debounce by at least 150ms in the client, since firing on every keystroke spends bandwidth for no better answer.\n\nRows come back most useful first, and each carries enough to build a link to the page it names without a second request.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "What has been typed so far.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "coburg"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many rows. Outside 1 to 50, the default applies.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching rows, best first. Empty for a term under two characters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/countries": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "operationId": "countries",
+        "summary": "Every country the directory covers",
+        "description": "Each with how many regions, suburbs and locations it holds.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The countries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountriesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/countries/{country}": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "operationId": "country",
+        "summary": "One country and its regions",
+        "description": "The regions with a page, largest first.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "path",
+            "required": true,
+            "description": "Country slug as the site's URLs use it: australia, new-zealand, united-kingdom, united-states, canada.",
+            "example": "australia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The country.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountryResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such country.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/countries/{country}/regions/{region}": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "operationId": "region",
+        "summary": "One region and its suburbs",
+        "description": "A page of the region's suburbs, alphabetical, with the total for paging.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "path",
+            "required": true,
+            "description": "Country slug as the site's URLs use it: australia, new-zealand, united-kingdom, united-states, canada.",
+            "example": "australia",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "region",
+            "in": "path",
+            "required": true,
+            "description": "Region slug.",
+            "example": "victoria",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many suburbs. Outside 1 to 500, the default applies.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 200
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "How many to skip, for the next page.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The region.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such region in that country.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/countries/{country}/categories/{category}": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "operationId": "category",
+        "summary": "One kind of place across a country",
+        "description": "\"Parcel lockers in Australia\": counts per region and the busiest suburbs, not a national list of every locker. A category with nothing in it answers 404 rather than an empty page.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "path",
+            "required": true,
+            "description": "Country slug as the site's URLs use it: australia, new-zealand, united-kingdom, united-states, canada.",
+            "example": "australia",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "description": "The kind of place.",
+            "example": "parcel-lockers",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "post-offices",
+                "post-boxes",
+                "express-post-boxes",
+                "parcel-lockers",
+                "drop-off-points",
+                "collection-points"
+              ]
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "description": "A region slug, to narrow the counts and the busiest suburbs to one region.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "victoria"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The category.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such country, or nothing of that category in it.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/countries/{country}/postcodes": {
+      "get": {
+        "tags": [
+          "Postcodes"
+        ],
+        "operationId": "postcodes",
+        "summary": "Every postcode in a country, grouped by region",
+        "description": "The whole index in one response, which is how a postcode list is read and what makes it cacheable. Large for a big country: fetch it once and keep it rather than asking per keystroke.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "path",
+            "required": true,
+            "description": "Country slug as the site's URLs use it: australia, new-zealand, united-kingdom, united-states, canada.",
+            "example": "australia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The index.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostcodesResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No postcodes held for that country.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/countries/{country}/postcodes/{postcode}": {
+      "get": {
+        "tags": [
+          "Postcodes"
+        ],
+        "operationId": "postcodeDetail",
+        "summary": "Resolve one postcode to the suburbs it covers",
+        "description": "A postcode is not a suburb. 3058 is Coburg, Coburg North and Merlynston, and an address in any of them is written with the same four digits, so this returns all of them, busiest first.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "path",
+            "required": true,
+            "description": "Country slug as the site's URLs use it: australia, new-zealand, united-kingdom, united-states, canada.",
+            "example": "australia",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "postcode",
+            "in": "path",
+            "required": true,
+            "description": "Three to five digits.",
+            "example": "3058",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{3,5}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The suburbs this postcode covers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostcodeResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not a postcode, or nothing is filed under it.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/localities/{country}/{region}/{locality}": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "operationId": "locality",
+        "summary": "One suburb: every place in it",
+        "description": "Every open place in the suburb, with counts per category and operator and the nearest suburbs, which is the page a suburb has on the site.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "path",
+            "required": true,
+            "description": "Country slug as the site's URLs use it: australia, new-zealand, united-kingdom, united-states, canada.",
+            "example": "australia",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "region",
+            "in": "path",
+            "required": true,
+            "description": "Region slug.",
+            "example": "victoria",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locality",
+            "in": "path",
+            "required": true,
+            "description": "Suburb slug.",
+            "example": "coburg",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The suburb.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocalityResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such suburb.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/places": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "operationId": "places",
+        "summary": "Places in a suburb, filtered",
+        "description": "Filter one suburb's places by operator or category.\n\nThe suburb is named by its numeric id, which no other endpoint returns; for most uses the suburb endpoint, which takes slugs, is the one to call.",
+        "parameters": [
+          {
+            "name": "locality",
+            "in": "query",
+            "required": true,
+            "description": "The suburb's numeric id.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "brand",
+            "in": "query",
+            "required": false,
+            "description": "An operator key: auspost.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "A kind of place.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "post-offices",
+                "post-boxes",
+                "express-post-boxes",
+                "parcel-lockers",
+                "drop-off-points",
+                "collection-points"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many places. Outside 1 to 200, the default applies.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The places, by name.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlacesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "locality is missing or not a number.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/places/{publicID}": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "operationId": "place",
+        "summary": "One place in full",
+        "description": "Everything about one place: address, opening hours, what it accepts, what is close by, and what visitors said. The id is permanent, so a stored id reads back the same place for as long as it exists.",
+        "parameters": [
+          {
+            "name": "publicID",
+            "in": "path",
+            "required": true,
+            "description": "The place's permanent id, the last segment of its URL.",
+            "example": "5puvhnr4",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z2-7]{8}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The place.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No place has that id.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nearby": {
+      "get": {
+        "tags": [
+          "Nearby"
+        ],
+        "operationId": "nearby",
+        "summary": "The nearest places of one kind to a coordinate",
+        "description": "\"Where is the nearest post office\": up to 30 places within 50 km, nearest first. Not cached, because every coordinate is different.",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "description": "Latitude.",
+            "schema": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            "example": -37.7404
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": true,
+            "description": "Longitude.",
+            "schema": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "example": 144.9633
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": true,
+            "description": "The kind of place.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "post-offices",
+                "post-boxes",
+                "express-post-boxes",
+                "parcel-lockers",
+                "drop-off-points",
+                "collection-points"
+              ]
+            },
+            "example": "post-offices"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": true,
+            "description": "Country slug.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "australia"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The nearest places.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NearbyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A coordinate out of range, or a missing or unknown category or country.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/openapi.json": {
+      "get": {
+        "tags": [
+          "Reference"
+        ],
+        "operationId": "openapi",
+        "summary": "This document",
+        "description": "The OpenAPI document for this host.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "This document.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Problem": {
+        "type": "object",
+        "description": "An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Always about:blank."
+          },
+          "title": {
+            "type": "string",
+            "description": "What went wrong, in a few words."
+          },
+          "status": {
+            "type": "integer",
+            "description": "The HTTP status, repeated."
+          },
+          "detail": {
+            "type": "string",
+            "description": "What to do about it. May be empty."
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "status",
+          "detail"
+        ],
+        "additionalProperties": false
+      },
+      "Country": {
+        "type": "object",
+        "description": "A country the directory covers.",
+        "properties": {
+          "iso2": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 code."
+          },
+          "slug": {
+            "type": "string",
+            "description": "The country as postfinder.io's URLs write it: australia, new-zealand."
+          },
+          "name": {
+            "type": "string",
+            "description": "The country's name."
+          }
+        },
+        "required": [
+          "iso2",
+          "slug",
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "Region": {
+        "type": "object",
+        "description": "A state, province or other first level division.",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "code": {
+            "type": "string",
+            "description": "The short code, where the country has them: VIC, NSW. Absent where it has none."
+          },
+          "name": {
+            "type": "string",
+            "description": "The region's name."
+          }
+        },
+        "required": [
+          "slug",
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "Locality": {
+        "type": "object",
+        "description": "A suburb or town.",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "name": {
+            "type": "string",
+            "description": "The suburb's name."
+          },
+          "postcode": {
+            "type": "string",
+            "description": "The postcode people write for it. Absent where the country's postcodes are not held."
+          },
+          "lat": {
+            "type": "number",
+            "description": "Latitude of the suburb's centre, where held."
+          },
+          "lng": {
+            "type": "number",
+            "description": "Longitude of the suburb's centre, where held."
+          },
+          "place_count": {
+            "type": "integer",
+            "description": "How many locations it holds."
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "place_count"
+        ],
+        "additionalProperties": false
+      },
+      "Place": {
+        "type": "object",
+        "description": "One post office, post box, parcel locker, drop off or collection point.",
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "description": "The place's permanent id: minted once, never reused, and the stable end of its URL.",
+            "pattern": "^[a-z2-7]{8}$"
+          },
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name on the door."
+          },
+          "brand": {
+            "type": "string",
+            "description": "Which operator runs it, as a key: auspost, parcelpoint, nzpost."
+          },
+          "category": {
+            "type": "string",
+            "description": "What kind of place it is.",
+            "enum": [
+              "post-offices",
+              "post-boxes",
+              "express-post-boxes",
+              "parcel-lockers",
+              "drop-off-points",
+              "collection-points"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "description": "The street address, where the source gives one. Absent otherwise: most post boxes have none."
+          },
+          "lat": {
+            "type": "number",
+            "description": "Latitude."
+          },
+          "lng": {
+            "type": "number",
+            "description": "Longitude."
+          },
+          "hours": {
+            "type": "object",
+            "description": "Opening hours as the source publishes them, with a tz, the source's own text, and a weekly map of day to open and close pairs. Open by design: sources carry extra keys (temporary closures, a counter's separate hatch hours) and a reader should keep what it does not know.",
+            "additionalProperties": true
+          },
+          "attributes": {
+            "type": "object",
+            "description": "Whatever else the source says: phone, services, what can be sent or collected. Open by design, because each source names its own keys; read the ones you need.",
+            "additionalProperties": true
+          },
+          "last_verified_at": {
+            "type": "string",
+            "description": "When a source last confirmed the record.",
+            "format": "date-time"
+          },
+          "closed_at": {
+            "type": "string",
+            "description": "When the place was recorded as closed. Only a place page shows a closed place.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "public_id",
+          "slug",
+          "name",
+          "brand",
+          "category",
+          "lat",
+          "lng"
+        ],
+        "additionalProperties": false
+      },
+      "NearbyPlace": {
+        "type": "object",
+        "description": "A place, with where it sits and how far it is from the point asked about.",
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "description": "The place's permanent id: minted once, never reused, and the stable end of its URL.",
+            "pattern": "^[a-z2-7]{8}$"
+          },
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name on the door."
+          },
+          "brand": {
+            "type": "string",
+            "description": "Which operator runs it, as a key: auspost, parcelpoint, nzpost."
+          },
+          "category": {
+            "type": "string",
+            "description": "What kind of place it is.",
+            "enum": [
+              "post-offices",
+              "post-boxes",
+              "express-post-boxes",
+              "parcel-lockers",
+              "drop-off-points",
+              "collection-points"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "description": "The street address, where the source gives one. Absent otherwise: most post boxes have none."
+          },
+          "lat": {
+            "type": "number",
+            "description": "Latitude."
+          },
+          "lng": {
+            "type": "number",
+            "description": "Longitude."
+          },
+          "hours": {
+            "type": "object",
+            "description": "Opening hours as the source publishes them, with a tz, the source's own text, and a weekly map of day to open and close pairs. Open by design: sources carry extra keys (temporary closures, a counter's separate hatch hours) and a reader should keep what it does not know.",
+            "additionalProperties": true
+          },
+          "attributes": {
+            "type": "object",
+            "description": "Whatever else the source says: phone, services, what can be sent or collected. Open by design, because each source names its own keys; read the ones you need.",
+            "additionalProperties": true
+          },
+          "last_verified_at": {
+            "type": "string",
+            "description": "When a source last confirmed the record.",
+            "format": "date-time"
+          },
+          "closed_at": {
+            "type": "string",
+            "description": "When the place was recorded as closed. Only a place page shows a closed place.",
+            "format": "date-time"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country slug."
+          },
+          "region": {
+            "type": "string",
+            "description": "Region slug."
+          },
+          "locality": {
+            "type": "string",
+            "description": "Suburb slug."
+          },
+          "distance_km": {
+            "type": "number",
+            "description": "Straight line distance in kilometres."
+          }
+        },
+        "required": [
+          "public_id",
+          "slug",
+          "name",
+          "brand",
+          "category",
+          "lat",
+          "lng",
+          "country",
+          "region",
+          "locality",
+          "distance_km"
+        ],
+        "additionalProperties": false
+      },
+      "CountrySummary": {
+        "type": "object",
+        "description": "A country and how much the directory holds for it.",
+        "properties": {
+          "iso2": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 code."
+          },
+          "slug": {
+            "type": "string",
+            "description": "The country as the site's URLs write it."
+          },
+          "name": {
+            "type": "string",
+            "description": "The country's name."
+          },
+          "region_count": {
+            "type": "integer",
+            "description": "Regions with a page."
+          },
+          "locality_count": {
+            "type": "integer",
+            "description": "Suburbs with a page."
+          },
+          "place_count": {
+            "type": "integer",
+            "description": "Locations held."
+          }
+        },
+        "required": [
+          "iso2",
+          "slug",
+          "name",
+          "region_count",
+          "locality_count",
+          "place_count"
+        ],
+        "additionalProperties": false
+      },
+      "RegionSummary": {
+        "type": "object",
+        "description": "A region and how much it holds.",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "code": {
+            "type": "string",
+            "description": "The short code, where the country has them."
+          },
+          "name": {
+            "type": "string",
+            "description": "The region's name."
+          },
+          "locality_count": {
+            "type": "integer",
+            "description": "Suburbs with a page."
+          },
+          "place_count": {
+            "type": "integer",
+            "description": "Locations held (on a category page, of that category only)."
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "locality_count",
+          "place_count"
+        ],
+        "additionalProperties": false
+      },
+      "LocalitySummary": {
+        "type": "object",
+        "description": "A suburb in a region's list.",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "name": {
+            "type": "string",
+            "description": "The suburb's name."
+          },
+          "postcode": {
+            "type": "string",
+            "description": "Its postcode, where held."
+          },
+          "place_count": {
+            "type": "integer",
+            "description": "Locations held."
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "place_count"
+        ],
+        "additionalProperties": false
+      },
+      "Facet": {
+        "type": "object",
+        "description": "One value and how many places have it.",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The category or brand key."
+          },
+          "count": {
+            "type": "integer",
+            "description": "How many places."
+          }
+        },
+        "required": [
+          "key",
+          "count"
+        ],
+        "additionalProperties": false
+      },
+      "LocalityLink": {
+        "type": "object",
+        "description": "Another suburb, with enough to link to its page.",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": "Country slug."
+          },
+          "region": {
+            "type": "string",
+            "description": "Region slug."
+          },
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "name": {
+            "type": "string",
+            "description": "The suburb's name."
+          },
+          "place_count": {
+            "type": "integer",
+            "description": "Locations held."
+          },
+          "distance_km": {
+            "type": "number",
+            "description": "Distance in kilometres from the suburb asked about; 0 where distance is not the ordering."
+          }
+        },
+        "required": [
+          "country",
+          "region",
+          "slug",
+          "name",
+          "place_count",
+          "distance_km"
+        ],
+        "additionalProperties": false
+      },
+      "PlaceLink": {
+        "type": "object",
+        "description": "Another place close by, with enough to link to its page.",
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "description": "The place's permanent id.",
+            "pattern": "^[a-z2-7]{8}$"
+          },
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name on the door."
+          },
+          "brand": {
+            "type": "string",
+            "description": "Operator key."
+          },
+          "category": {
+            "type": "string",
+            "description": "What kind of place it is.",
+            "enum": [
+              "post-offices",
+              "post-boxes",
+              "express-post-boxes",
+              "parcel-lockers",
+              "drop-off-points",
+              "collection-points"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "description": "Street address, where held."
+          },
+          "country": {
+            "type": "string",
+            "description": "Country slug."
+          },
+          "region": {
+            "type": "string",
+            "description": "Region slug."
+          },
+          "locality": {
+            "type": "string",
+            "description": "Suburb slug."
+          },
+          "distance_km": {
+            "type": "number",
+            "description": "Straight line distance in kilometres."
+          }
+        },
+        "required": [
+          "public_id",
+          "slug",
+          "name",
+          "brand",
+          "category",
+          "country",
+          "region",
+          "locality",
+          "distance_km"
+        ],
+        "additionalProperties": false
+      },
+      "CountryDetail": {
+        "type": "object",
+        "description": "A country and its regions.",
+        "properties": {
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "regions": {
+            "type": "array",
+            "description": "Every region with a page, largest first.",
+            "items": {
+              "$ref": "#/components/schemas/RegionSummary"
+            }
+          }
+        },
+        "required": [
+          "country",
+          "regions"
+        ],
+        "additionalProperties": false
+      },
+      "RegionDetail": {
+        "type": "object",
+        "description": "A region and a page of its suburbs.",
+        "properties": {
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "localities": {
+            "type": "array",
+            "description": "This page of the region's suburbs, alphabetical.",
+            "items": {
+              "$ref": "#/components/schemas/LocalitySummary"
+            }
+          },
+          "locality_total": {
+            "type": "integer",
+            "description": "How many suburbs the region has in all, for paging."
+          }
+        },
+        "required": [
+          "country",
+          "region",
+          "localities",
+          "locality_total"
+        ],
+        "additionalProperties": false
+      },
+      "CategoryHub": {
+        "type": "object",
+        "description": "One category across a country: counts per region and the busiest suburbs, not a list of every place.",
+        "properties": {
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "category": {
+            "type": "string",
+            "description": "The category.",
+            "enum": [
+              "post-offices",
+              "post-boxes",
+              "express-post-boxes",
+              "parcel-lockers",
+              "drop-off-points",
+              "collection-points"
+            ]
+          },
+          "total": {
+            "type": "integer",
+            "description": "Places of this category in the country (or region, when narrowed)."
+          },
+          "regions": {
+            "type": "array",
+            "description": "Regions holding this category, busiest first.",
+            "items": {
+              "$ref": "#/components/schemas/RegionSummary"
+            }
+          },
+          "localities": {
+            "type": "array",
+            "description": "The busiest suburbs for this category, up to 60.",
+            "items": {
+              "$ref": "#/components/schemas/LocalityLink"
+            }
+          }
+        },
+        "required": [
+          "country",
+          "category",
+          "total",
+          "regions",
+          "localities"
+        ],
+        "additionalProperties": false
+      },
+      "PostcodeEntry": {
+        "type": "object",
+        "description": "A suburb and the postcode people write for it.",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "The postcode."
+          },
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "name": {
+            "type": "string",
+            "description": "The suburb's name."
+          },
+          "place_count": {
+            "type": "integer",
+            "description": "Locations held."
+          }
+        },
+        "required": [
+          "postcode",
+          "slug",
+          "name",
+          "place_count"
+        ],
+        "additionalProperties": false
+      },
+      "RegionPostcodes": {
+        "type": "object",
+        "description": "One region's postcodes.",
+        "properties": {
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "entries": {
+            "type": "array",
+            "description": "Its suburbs and their postcodes.",
+            "items": {
+              "$ref": "#/components/schemas/PostcodeEntry"
+            }
+          }
+        },
+        "required": [
+          "region",
+          "entries"
+        ],
+        "additionalProperties": false
+      },
+      "PostcodeIndex": {
+        "type": "object",
+        "description": "Every postcode in a country, grouped by region.",
+        "properties": {
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "total": {
+            "type": "integer",
+            "description": "How many suburbs are listed."
+          },
+          "regions": {
+            "type": "array",
+            "description": "By region.",
+            "items": {
+              "$ref": "#/components/schemas/RegionPostcodes"
+            }
+          }
+        },
+        "required": [
+          "country",
+          "total",
+          "regions"
+        ],
+        "additionalProperties": false
+      },
+      "PostcodeDetail": {
+        "type": "object",
+        "description": "One postcode and the suburbs it covers.",
+        "properties": {
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "postcode": {
+            "type": "string",
+            "description": "The postcode."
+          },
+          "total": {
+            "type": "integer",
+            "description": "Places across every suburb it covers."
+          },
+          "localities": {
+            "type": "array",
+            "description": "The suburbs it covers, busiest first.",
+            "items": {
+              "$ref": "#/components/schemas/LocalityLink"
+            }
+          }
+        },
+        "required": [
+          "country",
+          "region",
+          "postcode",
+          "total",
+          "localities"
+        ],
+        "additionalProperties": false
+      },
+      "LocalityDetail": {
+        "type": "object",
+        "description": "A suburb: every place in it, with facet counts and its neighbours.",
+        "properties": {
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "locality": {
+            "$ref": "#/components/schemas/Locality"
+          },
+          "categories": {
+            "type": "array",
+            "description": "How many places of each category.",
+            "items": {
+              "$ref": "#/components/schemas/Facet"
+            }
+          },
+          "brands": {
+            "type": "array",
+            "description": "How many places of each operator.",
+            "items": {
+              "$ref": "#/components/schemas/Facet"
+            }
+          },
+          "places": {
+            "type": "array",
+            "description": "Every open place in the suburb.",
+            "items": {
+              "$ref": "#/components/schemas/Place"
+            }
+          },
+          "neighbours": {
+            "type": "array",
+            "description": "Nearby suburbs, nearest first.",
+            "items": {
+              "$ref": "#/components/schemas/LocalityLink"
+            }
+          }
+        },
+        "required": [
+          "country",
+          "region",
+          "locality",
+          "categories",
+          "brands",
+          "places",
+          "neighbours"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewSummary": {
+        "type": "object",
+        "description": "What visitors said, summarised.",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Approved reviews."
+          },
+          "average": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Mean rating out of five, or null with no rated reviews."
+          },
+          "last_as_listed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When a visitor last found the place as listed, or null."
+          }
+        },
+        "required": [
+          "count",
+          "average",
+          "last_as_listed_at"
+        ],
+        "additionalProperties": false
+      },
+      "Review": {
+        "type": "object",
+        "description": "One approved review.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Review id."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name the reviewer chose."
+          },
+          "outcome": {
+            "type": "string",
+            "description": "How the visit went.",
+            "enum": [
+              "as_listed",
+              "different",
+              "no_go"
+            ]
+          },
+          "rating": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "One to five, or null when not rated.",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "body": {
+            "type": "string",
+            "description": "What they wrote, when they wrote anything."
+          },
+          "created_at": {
+            "type": "string",
+            "description": "When it was written.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "outcome",
+          "rating",
+          "created_at"
+        ],
+        "additionalProperties": false
+      },
+      "Reviews": {
+        "type": "object",
+        "description": "Approved reviews: a summary and the most recent.",
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/ReviewSummary"
+          },
+          "recent": {
+            "type": "array",
+            "description": "The most recent, newest first.",
+            "items": {
+              "$ref": "#/components/schemas/Review"
+            }
+          }
+        },
+        "required": [
+          "summary",
+          "recent"
+        ],
+        "additionalProperties": false
+      },
+      "Photo": {
+        "type": "object",
+        "description": "An approved photo. Fetch it at https://postfinder.io/media/{id}.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Photo id."
+          },
+          "credit": {
+            "type": "string",
+            "description": "Who took it, when they asked to be credited."
+          },
+          "licence": {
+            "type": "string",
+            "description": "Its licence."
+          },
+          "width": {
+            "type": "integer",
+            "description": "Pixels."
+          },
+          "height": {
+            "type": "integer",
+            "description": "Pixels."
+          },
+          "created_at": {
+            "type": "string",
+            "description": "When it was added.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "licence",
+          "width",
+          "height",
+          "created_at"
+        ],
+        "additionalProperties": false
+      },
+      "PlaceDetail": {
+        "type": "object",
+        "description": "One place in full, with where it sits, what is close by, reviews and photos.",
+        "properties": {
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "locality": {
+            "$ref": "#/components/schemas/Locality"
+          },
+          "place": {
+            "$ref": "#/components/schemas/Place"
+          },
+          "nearby": {
+            "type": "array",
+            "description": "Other places close by, nearest first.",
+            "items": {
+              "$ref": "#/components/schemas/PlaceLink"
+            }
+          },
+          "reviews": {
+            "$ref": "#/components/schemas/Reviews"
+          },
+          "photos": {
+            "type": "array",
+            "description": "Approved photos, newest first.",
+            "items": {
+              "$ref": "#/components/schemas/Photo"
+            }
+          }
+        },
+        "required": [
+          "country",
+          "region",
+          "locality",
+          "place",
+          "nearby",
+          "reviews",
+          "photos"
+        ],
+        "additionalProperties": false
+      },
+      "SearchHit": {
+        "type": "object",
+        "description": "A suburb or a place matching what was typed, with enough to link to its page.",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "A suburb or a place.",
+            "enum": [
+              "locality",
+              "place"
+            ]
+          },
+          "slug": {
+            "type": "string",
+            "description": "The URL segment this row has on postfinder.io."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name to show."
+          },
+          "country": {
+            "type": "string",
+            "description": "Country slug."
+          },
+          "region": {
+            "type": "string",
+            "description": "Region slug."
+          },
+          "locality": {
+            "type": "string",
+            "description": "For a place, its suburb's slug."
+          },
+          "place_count": {
+            "type": "integer",
+            "description": "For a suburb, how many locations it holds."
+          },
+          "postcode": {
+            "type": "string",
+            "description": "The suburb's postcode, for a suburb or a place, where held."
+          },
+          "lat": {
+            "type": "number",
+            "description": "Latitude, where held."
+          },
+          "lng": {
+            "type": "number",
+            "description": "Longitude, where held."
+          },
+          "score": {
+            "type": "number",
+            "description": "How well it matched, 0 to 1. Rows come best first."
+          }
+        },
+        "required": [
+          "kind",
+          "slug",
+          "name",
+          "country",
+          "region",
+          "score"
+        ],
+        "additionalProperties": false
+      },
+      "SearchResponse": {
+        "type": "object",
+        "description": "Matches, best first.",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Suburbs and places.",
+            "items": {
+              "$ref": "#/components/schemas/SearchHit"
+            }
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "CountriesResponse": {
+        "type": "object",
+        "description": "Every country covered.",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Countries.",
+            "items": {
+              "$ref": "#/components/schemas/CountrySummary"
+            }
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "CountryResponse": {
+        "type": "object",
+        "description": "One country.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CountryDetail"
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "RegionResponse": {
+        "type": "object",
+        "description": "One region.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RegionDetail"
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "CategoryResponse": {
+        "type": "object",
+        "description": "One category across a country.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CategoryHub"
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "PostcodesResponse": {
+        "type": "object",
+        "description": "The postcode index.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PostcodeIndex"
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "PostcodeResponse": {
+        "type": "object",
+        "description": "One postcode.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PostcodeDetail"
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "LocalityResponse": {
+        "type": "object",
+        "description": "One suburb.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LocalityDetail"
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "PlacesResponse": {
+        "type": "object",
+        "description": "Places in a suburb.",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Places, by name.",
+            "items": {
+              "$ref": "#/components/schemas/Place"
+            }
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          },
+          "next_cursor": {
+            "type": "string",
+            "description": "Reserved for paging. Never set today: the first page is the whole answer, up to limit."
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "PlaceResponse": {
+        "type": "object",
+        "description": "One place.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PlaceDetail"
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "NearbyResponse": {
+        "type": "object",
+        "description": "The nearest places, nearest first.",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Up to 30 places within 50 km.",
+            "items": {
+              "$ref": "#/components/schemas/NearbyPlace"
+            }
+          },
+          "generated_at": {
+            "type": "string",
+            "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

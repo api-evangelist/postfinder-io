@@ -1,29 +1,187 @@
 aid: postfinder-io
 name: Postfinder
-description: 'Postfinder is a company surfaced via the API Evangelist harvest backlog (source: new-submission)
-  and added to the network as a stub for full-pipeline profiling.'
+image: https://postfinder.io/og.png
+description: Postfinder provides an API for Australian address autocomplete and location lookup of post offices, parcel lockers, carrier drop‑off
+  points and street post boxes. The service aggregates data from Australia Post, OpenStreetMap and carrier feeds, offering opening hours, addresses,
+  maps and postcode lookup. Users can search by suburb, street address or postcode, and also browse locations by state or country, covering Australia,
+  Canada, New Zealand, the United Kingdom and the United States. The API returns structured JSON suitable for integration into e‑commerce, logistics
+  and mapping applications.
 url: https://raw.githubusercontent.com/api-evangelist/postfinder-io/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:new-submission
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-02 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-02'
 modified: '2026-10-02'
 tags:
 - Company
-apis: []
+- Address
+- Autocomplete
+- Logistics
+- Australia
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/postfinder-io-agentic-access.yml
+- type: Spectral
+  url: rules/postfinder-io-rules.yml
+- type: JSONLD
+  url: json-ld/postfinder-io-context.jsonld
+- type: Vocabulary
+  url: vocabulary/postfinder-io-vocabulary.yml
+- type: DataModel
+  url: data-model/postfinder-io-data-model.yml
+- type: ErrorCatalog
+  url: errors/postfinder-io-problem-types.yml
+- type: Conformance
+  url: conformance/postfinder-io-conformance.yml
+- type: LLMsTxt
+  url: llms/postfinder-io-llms.txt
+- type: Hosts
+  url: hosts/postfinder-io-hosts.yml
+- type: Vendors
+  url: vendors/postfinder-io-vendors.yml
+- type: SDKs
+  url: packages/postfinder-io-packages.yml
+- type: Packages
+  url: packages/postfinder-io-packages.yml
+- type: TermsOfService
+  url: https://postfinder.io/en/terms/
+- type: PrivacyPolicy
+  url: https://postfinder.io/en/privacy/
+- type: DeveloperPortal
+  url: https://api.postfinder.io<!--
+- type: GitHubOrganization
+  url: https://github.com/postfinder
+- type: DomainSecurity
+  url: security/postfinder-io-domain-security.yml
 - type: Website
   url: https://postfinder.io/
 - type: Documentation
   url: https://postfinder.io/api/
+apis:
+- aid: postfinder-io:postfinder-io-nearby-api
+  name: Postfinder Nearby API
+  description: 'What is nearest a coordinate: the question most callers are asking.'
+  humanURL: https://postfinder.io/api/
+  baseURL: https://api.postfinder.io
+  tags:
+  - Nearby
+  properties:
+  - type: OpenAPI
+    url: openapi/postfinder-io-nearby-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/postfinder-io-places-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-nearby-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-search-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-countries-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-category-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-postcodes-response-schema.json
+- aid: postfinder-io:postfinder-io-places-api
+  name: Postfinder Places API
+  description: 'The directory as the site''s pages have it: countries, regions, suburbs and places.'
+  humanURL: https://postfinder.io/api/
+  baseURL: https://api.postfinder.io
+  tags:
+  - Places
+  properties:
+  - type: OpenAPI
+    url: openapi/postfinder-io-places-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/postfinder-io-places-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-nearby-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-search-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-countries-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-category-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-postcodes-response-schema.json
+- aid: postfinder-io:postfinder-io-postcodes-api
+  name: Postfinder Postcodes API
+  description: Postcode lookup, in both directions.
+  humanURL: https://postfinder.io/api/
+  baseURL: https://api.postfinder.io
+  tags:
+  - Postcodes
+  properties:
+  - type: OpenAPI
+    url: openapi/postfinder-io-postcodes-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/postfinder-io-places-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-nearby-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-search-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-countries-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-category-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-postcodes-response-schema.json
+- aid: postfinder-io:postfinder-io-reference-api
+  name: Postfinder Reference API
+  description: This document.
+  humanURL: https://postfinder.io/api/
+  baseURL: https://api.postfinder.io
+  tags:
+  - Reference
+  properties:
+  - type: OpenAPI
+    url: openapi/postfinder-io-reference-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/postfinder-io-places-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-nearby-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-search-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-countries-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-category-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-postcodes-response-schema.json
+- aid: postfinder-io:postfinder-io-search-api
+  name: Postfinder Search API
+  description: Turn what somebody typed into a suburb or a place.
+  humanURL: https://postfinder.io/api/
+  baseURL: https://api.postfinder.io
+  tags:
+  - Search
+  properties:
+  - type: OpenAPI
+    url: openapi/postfinder-io-search-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/postfinder-io-places-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-nearby-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-search-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-countries-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-category-response-schema.json
+  - type: JSONSchema
+    url: json-schema/postfinder-io-postcodes-response-schema.json
 x-submission-notes: Australian address autocomplete and post office / parcel locker location API.
-x-submission-probe: root 200; /api/ 200; api.postfinder.io/v1/openapi.json OpenAPI 3.1.0 12 paths; /v1/search
-  200 JSON; llms.txt 200; 404 probe 404
+x-submission-probe: root 200; /api/ 200; api.postfinder.io/v1/openapi.json OpenAPI 3.1.0 12 paths; /v1/search 200 JSON; llms.txt 200; 404 probe
+  404
 x-submitted-by: postmaster@postfinder.io (apis.io/add, 2026-10-02)
+x-enrichment:
+  date: '2026-10-02'
+  status: enriched
+  artifacts_added: 17
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local

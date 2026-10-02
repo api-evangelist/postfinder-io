@@ -1,0 +1,42 @@
+# PostFinder
+
+> Where to post, collect and drop off a parcel: post offices, parcel lockers, drop off points and street post boxes, with opening hours, addresses and maps, in Australia, the United States, the United Kingdom, Canada and New Zealand.
+
+Every page is complete HTML on first byte, with schema.org JSON-LD for the place, its address, its position and its opening hours. Crawling and quoting are welcome: cite the page an answer came from, so a reader can check it and see when it was last updated. No permission needed and no key to ask for.
+
+## What a page answers
+
+- [A country](https://postfinder.io/en/australia/): every state or region, and what is in it.
+- [A state or region](https://postfinder.io/en/australia/victoria/): its suburbs and towns, largest first.
+- [A suburb](https://postfinder.io/en/australia/victoria/coburg/): every post office, locker, drop off point and post box in it, with hours.
+- [One kind in a suburb](https://postfinder.io/en/australia/victoria/coburg/post-offices/): the same list narrowed to post offices, a carrier, or the places open around the clock.
+- [One place](https://postfinder.io/en/australia/victoria/coburg/australia-post/coburg-post-shop-3k9fq2ab/): its address, hours, services, phone and map.
+- [A postcode](https://postfinder.io/en/australia/postcodes/3058/): which suburbs use it and what is in them.
+
+## The same data as data
+
+The read only API is free, needs no key and no account, and is open to automated use. It answers the questions above directly, which is usually better than reading a page for them.
+
+- [OpenAPI document](https://api.postfinder.io/v1/openapi.json): every endpoint, with its parameters and responses.
+- [Nearest places to a point](https://api.postfinder.io/v1/nearby?lat=-37.74&lng=144.96&country=australia&category=parcel-lockers): what is closest, with distances.
+- [One suburb](https://api.postfinder.io/v1/localities/australia/victoria/coburg): every place in it.
+- [One place](https://api.postfinder.io/v1/places/3k9fq2ab): the record behind a page.
+- [Human reference](https://postfinder.io/api/): the same endpoints, with examples.
+
+For an agent that speaks MCP, https://api.postfinder.io/mcp is the same directory as tools, over
+Streamable HTTP, with no key and no account: find_places for what is nearest a
+coordinate, search_places to turn a suburb name into somewhere with a
+coordinate, and get_place to read one back in full. Every answer carries the
+page's URL and the date the record was last checked, so an answer can cite the
+page rather than describe it.
+
+Please read the [acceptable use policy](https://postfinder.io/en/acceptable-use/) before pointing anything large at it.
+
+## Terms and sources
+
+- [Sources and licences](https://postfinder.io/en/legal/): what each record came from.
+- OpenStreetMap contributors, under ODbL: post boxes, lockers and shops.
+- GeoNames, under CC BY 4.0: the suburb, region and postcode spine.
+- Australia Post, USPS, DHL, FedEx, HUBBED and other carriers publish their own locations, under their own terms.
+
+Hours and services change. Every page carries the date its record was last updated from its source, in the page and in its JSON-LD as dateModified; quote that date with the answer.

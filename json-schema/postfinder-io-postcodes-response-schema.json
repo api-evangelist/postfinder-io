@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/postfinder-io/main/json-schema/postfinder-io-postcodes-response-schema.json",
+  "title": "PostcodesResponse",
+  "description": "The postcode index.",
+  "x-generated": "2026-10-02",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/postfinder-io-openapi.json#/components/schemas/PostcodesResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/PostcodeIndex"
+    },
+    "generated_at": {
+      "type": "string",
+      "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "data",
+    "generated_at"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Country": {
+      "type": "object",
+      "description": "A country the directory covers.",
+      "properties": {
+        "iso2": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 code."
+        },
+        "slug": {
+          "type": "string",
+          "description": "The country as postfinder.io's URLs write it: australia, new-zealand."
+        },
+        "name": {
+          "type": "string",
+          "description": "The country's name."
+        }
+      },
+      "required": [
+        "iso2",
+        "slug",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "PostcodeEntry": {
+      "type": "object",
+      "description": "A suburb and the postcode people write for it.",
+      "properties": {
+        "postcode": {
+          "type": "string",
+          "description": "The postcode."
+        },
+        "slug": {
+          "type": "string",
+          "description": "The URL segment this row has on postfinder.io."
+        },
+        "name": {
+          "type": "string",
+          "description": "The suburb's name."
+        },
+        "place_count": {
+          "type": "integer",
+          "description": "Locations held."
+        }
+      },
+      "required": [
+        "postcode",
+        "slug",
+        "name",
+        "place_count"
+      ],
+      "additionalProperties": false
+    },
+    "PostcodeIndex": {
+      "type": "object",
+      "description": "Every postcode in a country, grouped by region.",
+      "properties": {
+        "country": {
+          "$ref": "#/$defs/Country"
+        },
+        "total": {
+          "type": "integer",
+          "description": "How many suburbs are listed."
+        },
+        "regions": {
+          "type": "array",
+          "description": "By region.",
+          "items": {
+            "$ref": "#/$defs/RegionPostcodes"
+          }
+        }
+      },
+      "required": [
+        "country",
+        "total",
+        "regions"
+      ],
+      "additionalProperties": false
+    },
+    "Region": {
+      "type": "object",
+      "description": "A state, province or other first level division.",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "The URL segment this row has on postfinder.io."
+        },
+        "code": {
+          "type": "string",
+          "description": "The short code, where the country has them: VIC, NSW. Absent where it has none."
+        },
+        "name": {
+          "type": "string",
+          "description": "The region's name."
+        }
+      },
+      "required": [
+        "slug",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "RegionPostcodes": {
+      "type": "object",
+      "description": "One region's postcodes.",
+      "properties": {
+        "region": {
+          "$ref": "#/$defs/Region"
+        },
+        "entries": {
+          "type": "array",
+          "description": "Its suburbs and their postcodes.",
+          "items": {
+            "$ref": "#/$defs/PostcodeEntry"
+          }
+        }
+      },
+      "required": [
+        "region",
+        "entries"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

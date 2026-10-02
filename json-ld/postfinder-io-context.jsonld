@@ -1,0 +1,287 @@
+{
+  "@context": {
+    "@vocab": "https://postfinder.io/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "postfinder": "https://postfinder.io/schema#",
+    "Problem": "postfinder:Problem",
+    "type": {
+      "@id": "postfinder:type",
+      "@type": "xsd:string"
+    },
+    "title": {
+      "@id": "postfinder:title",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "postfinder:status",
+      "@type": "xsd:integer"
+    },
+    "detail": {
+      "@id": "postfinder:detail",
+      "@type": "xsd:string"
+    },
+    "Country": "postfinder:Country",
+    "iso2": {
+      "@id": "postfinder:iso2",
+      "@type": "xsd:string"
+    },
+    "slug": {
+      "@id": "postfinder:slug",
+      "@type": "xsd:string"
+    },
+    "name": {
+      "@id": "postfinder:name",
+      "@type": "xsd:string"
+    },
+    "Region": "postfinder:Region",
+    "code": {
+      "@id": "postfinder:code",
+      "@type": "xsd:string"
+    },
+    "Locality": "postfinder:Locality",
+    "postcode": {
+      "@id": "postfinder:postcode",
+      "@type": "xsd:string"
+    },
+    "lat": {
+      "@id": "postfinder:lat",
+      "@type": "xsd:decimal"
+    },
+    "lng": {
+      "@id": "postfinder:lng",
+      "@type": "xsd:decimal"
+    },
+    "place_count": {
+      "@id": "postfinder:place_count",
+      "@type": "xsd:integer"
+    },
+    "Place": "postfinder:Place",
+    "public_id": {
+      "@id": "postfinder:public_id",
+      "@type": "xsd:string"
+    },
+    "brand": {
+      "@id": "postfinder:brand",
+      "@type": "xsd:string"
+    },
+    "category": {
+      "@id": "postfinder:category",
+      "@type": "xsd:string"
+    },
+    "address": {
+      "@id": "postfinder:address",
+      "@type": "xsd:string"
+    },
+    "hours": {
+      "@id": "postfinder:hours"
+    },
+    "attributes": {
+      "@id": "postfinder:attributes"
+    },
+    "last_verified_at": {
+      "@id": "postfinder:last_verified_at",
+      "@type": "xsd:dateTime"
+    },
+    "closed_at": {
+      "@id": "postfinder:closed_at",
+      "@type": "xsd:dateTime"
+    },
+    "NearbyPlace": "postfinder:NearbyPlace",
+    "country": {
+      "@id": "postfinder:country",
+      "@type": "xsd:string"
+    },
+    "region": {
+      "@id": "postfinder:region",
+      "@type": "xsd:string"
+    },
+    "locality": {
+      "@id": "postfinder:locality",
+      "@type": "xsd:string"
+    },
+    "distance_km": {
+      "@id": "postfinder:distance_km",
+      "@type": "xsd:decimal"
+    },
+    "CountrySummary": "postfinder:CountrySummary",
+    "region_count": {
+      "@id": "postfinder:region_count",
+      "@type": "xsd:integer"
+    },
+    "locality_count": {
+      "@id": "postfinder:locality_count",
+      "@type": "xsd:integer"
+    },
+    "RegionSummary": "postfinder:RegionSummary",
+    "LocalitySummary": "postfinder:LocalitySummary",
+    "Facet": "postfinder:Facet",
+    "key": {
+      "@id": "postfinder:key",
+      "@type": "xsd:string"
+    },
+    "count": {
+      "@id": "postfinder:count",
+      "@type": "xsd:integer"
+    },
+    "LocalityLink": "postfinder:LocalityLink",
+    "PlaceLink": "postfinder:PlaceLink",
+    "CountryDetail": "postfinder:CountryDetail",
+    "regions": {
+      "@id": "postfinder:regions",
+      "@container": "@list"
+    },
+    "RegionDetail": "postfinder:RegionDetail",
+    "localities": {
+      "@id": "postfinder:localities",
+      "@container": "@list"
+    },
+    "locality_total": {
+      "@id": "postfinder:locality_total",
+      "@type": "xsd:integer"
+    },
+    "CategoryHub": "postfinder:CategoryHub",
+    "total": {
+      "@id": "postfinder:total",
+      "@type": "xsd:integer"
+    },
+    "PostcodeEntry": "postfinder:PostcodeEntry",
+    "RegionPostcodes": "postfinder:RegionPostcodes",
+    "entries": {
+      "@id": "postfinder:entries",
+      "@container": "@list"
+    },
+    "PostcodeIndex": "postfinder:PostcodeIndex",
+    "PostcodeDetail": "postfinder:PostcodeDetail",
+    "LocalityDetail": "postfinder:LocalityDetail",
+    "categories": {
+      "@id": "postfinder:categories",
+      "@container": "@list"
+    },
+    "brands": {
+      "@id": "postfinder:brands",
+      "@container": "@list"
+    },
+    "places": {
+      "@id": "postfinder:places",
+      "@container": "@list"
+    },
+    "neighbours": {
+      "@id": "postfinder:neighbours",
+      "@container": "@list"
+    },
+    "ReviewSummary": "postfinder:ReviewSummary",
+    "average": {
+      "@id": "postfinder:average",
+      "@type": "xsd:decimal"
+    },
+    "last_as_listed_at": {
+      "@id": "postfinder:last_as_listed_at",
+      "@type": "xsd:dateTime"
+    },
+    "Review": "postfinder:Review",
+    "id": {
+      "@id": "postfinder:id",
+      "@type": "xsd:integer"
+    },
+    "outcome": {
+      "@id": "postfinder:outcome",
+      "@type": "xsd:string"
+    },
+    "rating": {
+      "@id": "postfinder:rating",
+      "@type": "xsd:integer"
+    },
+    "body": {
+      "@id": "postfinder:body",
+      "@type": "xsd:string"
+    },
+    "created_at": {
+      "@id": "postfinder:created_at",
+      "@type": "xsd:dateTime"
+    },
+    "Reviews": "postfinder:Reviews",
+    "summary": {
+      "@id": "postfinder:summary",
+      "@type": "@id"
+    },
+    "recent": {
+      "@id": "postfinder:recent",
+      "@container": "@list"
+    },
+    "Photo": "postfinder:Photo",
+    "credit": {
+      "@id": "postfinder:credit",
+      "@type": "xsd:string"
+    },
+    "licence": {
+      "@id": "postfinder:licence",
+      "@type": "xsd:string"
+    },
+    "width": {
+      "@id": "postfinder:width",
+      "@type": "xsd:integer"
+    },
+    "height": {
+      "@id": "postfinder:height",
+      "@type": "xsd:integer"
+    },
+    "PlaceDetail": "postfinder:PlaceDetail",
+    "place": {
+      "@id": "postfinder:place",
+      "@type": "@id"
+    },
+    "nearby": {
+      "@id": "postfinder:nearby",
+      "@container": "@list"
+    },
+    "reviews": {
+      "@id": "postfinder:reviews",
+      "@type": "@id"
+    },
+    "photos": {
+      "@id": "postfinder:photos",
+      "@container": "@list"
+    },
+    "SearchHit": "postfinder:SearchHit",
+    "kind": {
+      "@id": "postfinder:kind",
+      "@type": "xsd:string"
+    },
+    "score": {
+      "@id": "postfinder:score",
+      "@type": "xsd:decimal"
+    },
+    "SearchResponse": "postfinder:SearchResponse",
+    "data": {
+      "@id": "postfinder:data",
+      "@container": "@list"
+    },
+    "generated_at": {
+      "@id": "postfinder:generated_at",
+      "@type": "xsd:dateTime"
+    },
+    "CountriesResponse": "postfinder:CountriesResponse",
+    "CountryResponse": "postfinder:CountryResponse",
+    "RegionResponse": "postfinder:RegionResponse",
+    "CategoryResponse": "postfinder:CategoryResponse",
+    "PostcodesResponse": "postfinder:PostcodesResponse",
+    "PostcodeResponse": "postfinder:PostcodeResponse",
+    "LocalityResponse": "postfinder:LocalityResponse",
+    "PlacesResponse": "postfinder:PlacesResponse",
+    "next_cursor": {
+      "@id": "postfinder:next_cursor",
+      "@type": "xsd:string"
+    },
+    "PlaceResponse": "postfinder:PlaceResponse",
+    "NearbyResponse": "postfinder:NearbyResponse"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Postfinder API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Postfinder's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-02) from openapi/postfinder-io-openapi.json.",
+  "dcterms:created": "2026-10-02",
+  "dcterms:source": [
+    "openapi/postfinder-io-openapi.json"
+  ]
+}

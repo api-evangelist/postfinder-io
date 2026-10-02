@@ -1,0 +1,23 @@
+{
+  "provider": "postfinder-io",
+  "sources": [
+    "postfinder-io-openapi.json"
+  ],
+  "outputs": [
+    "postfinder-io-nearby-api-openapi.yml",
+    "postfinder-io-places-api-openapi.yml",
+    "postfinder-io-postcodes-api-openapi.yml",
+    "postfinder-io-reference-api-openapi.yml",
+    "postfinder-io-search-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/postfinder-io-openapi.json"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "postfinder-io-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: written (+5 apis, 5 total)"
+  ],
+  "skipped": []
+}

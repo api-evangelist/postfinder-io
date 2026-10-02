@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/postfinder-io/main/json-schema/postfinder-io-category-response-schema.json",
+  "title": "CategoryResponse",
+  "description": "One category across a country.",
+  "x-generated": "2026-10-02",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/postfinder-io-openapi.json#/components/schemas/CategoryResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/CategoryHub"
+    },
+    "generated_at": {
+      "type": "string",
+      "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "data",
+    "generated_at"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "CategoryHub": {
+      "type": "object",
+      "description": "One category across a country: counts per region and the busiest suburbs, not a list of every place.",
+      "properties": {
+        "country": {
+          "$ref": "#/$defs/Country"
+        },
+        "category": {
+          "type": "string",
+          "description": "The category.",
+          "enum": [
+            "post-offices",
+            "post-boxes",
+            "express-post-boxes",
+            "parcel-lockers",
+            "drop-off-points",
+            "collection-points"
+          ]
+        },
+        "total": {
+          "type": "integer",
+          "description": "Places of this category in the country (or region, when narrowed)."
+        },
+        "regions": {
+          "type": "array",
+          "description": "Regions holding this category, busiest first.",
+          "items": {
+            "$ref": "#/$defs/RegionSummary"
+          }
+        },
+        "localities": {
+          "type": "array",
+          "description": "The busiest suburbs for this category, up to 60.",
+          "items": {
+            "$ref": "#/$defs/LocalityLink"
+          }
+        }
+      },
+      "required": [
+        "country",
+        "category",
+        "total",
+        "regions",
+        "localities"
+      ],
+      "additionalProperties": false
+    },
+    "Country": {
+      "type": "object",
+      "description": "A country the directory covers.",
+      "properties": {
+        "iso2": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 code."
+        },
+        "slug": {
+          "type": "string",
+          "description": "The country as postfinder.io's URLs write it: australia, new-zealand."
+        },
+        "name": {
+          "type": "string",
+          "description": "The country's name."
+        }
+      },
+      "required": [
+        "iso2",
+        "slug",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "LocalityLink": {
+      "type": "object",
+      "description": "Another suburb, with enough to link to its page.",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Country slug."
+        },
+        "region": {
+          "type": "string",
+          "description": "Region slug."
+        },
+        "slug": {
+          "type": "string",
+          "description": "The URL segment this row has on postfinder.io."
+        },
+        "name": {
+          "type": "string",
+          "description": "The suburb's name."
+        },
+        "place_count": {
+          "type": "integer",
+          "description": "Locations held."
+        },
+        "distance_km": {
+          "type": "number",
+          "description": "Distance in kilometres from the suburb asked about; 0 where distance is not the ordering."
+        }
+      },
+      "required": [
+        "country",
+        "region",
+        "slug",
+        "name",
+        "place_count",
+        "distance_km"
+      ],
+      "additionalProperties": false
+    },
+    "RegionSummary": {
+      "type": "object",
+      "description": "A region and how much it holds.",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "The URL segment this row has on postfinder.io."
+        },
+        "code": {
+          "type": "string",
+          "description": "The short code, where the country has them."
+        },
+        "name": {
+          "type": "string",
+          "description": "The region's name."
+        },
+        "locality_count": {
+          "type": "integer",
+          "description": "Suburbs with a page."
+        },
+        "place_count": {
+          "type": "integer",
+          "description": "Locations held (on a category page, of that category only)."
+        }
+      },
+      "required": [
+        "slug",
+        "name",
+        "locality_count",
+        "place_count"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

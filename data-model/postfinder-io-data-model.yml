@@ -1,0 +1,292 @@
+generated: '2026-10-02'
+method: derived
+generator: derive-data-model.py
+source:
+- openapi/postfinder-io-openapi.json
+notation: has_one = property $ref; has_many = array of $ref; belongs_to = <entity>_id field
+summary:
+  entities: 37
+  entities_in_spec: 37
+  relationships: 42
+entities:
+- name: CategoryHub
+  fields: 5
+  description: 'One category across a country: counts per region and the busiest suburbs, not a list of every place.'
+- name: CategoryResponse
+  fields: 2
+  description: One category across a country.
+- name: CountriesResponse
+  fields: 2
+  description: Every country covered.
+- name: Country
+  fields: 3
+  description: A country the directory covers.
+- name: CountryDetail
+  fields: 2
+  description: A country and its regions.
+- name: CountryResponse
+  fields: 2
+  description: One country.
+- name: CountrySummary
+  fields: 6
+  description: A country and how much the directory holds for it.
+- name: Facet
+  fields: 2
+  description: One value and how many places have it.
+- name: Locality
+  fields: 6
+  description: A suburb or town.
+- name: LocalityDetail
+  fields: 7
+  description: 'A suburb: every place in it, with facet counts and its neighbours.'
+- name: LocalityLink
+  fields: 6
+  description: Another suburb, with enough to link to its page.
+- name: LocalityResponse
+  fields: 2
+  description: One suburb.
+- name: LocalitySummary
+  fields: 4
+  description: A suburb in a region's list.
+- name: NearbyPlace
+  fields: 16
+  description: A place, with where it sits and how far it is from the point asked about.
+- name: NearbyResponse
+  fields: 2
+  description: The nearest places, nearest first.
+- name: Photo
+  fields: 6
+  description: An approved photo. Fetch it at https://postfinder.io/media/{id}.
+- name: Place
+  fields: 12
+  description: One post office, post box, parcel locker, drop off or collection point.
+- name: PlaceDetail
+  fields: 7
+  description: One place in full, with where it sits, what is close by, reviews and photos.
+- name: PlaceLink
+  fields: 10
+  description: Another place close by, with enough to link to its page.
+- name: PlaceResponse
+  fields: 2
+  description: One place.
+- name: PlacesResponse
+  fields: 3
+  description: Places in a suburb.
+- name: PostcodeDetail
+  fields: 5
+  description: One postcode and the suburbs it covers.
+- name: PostcodeEntry
+  fields: 4
+  description: A suburb and the postcode people write for it.
+- name: PostcodeIndex
+  fields: 3
+  description: Every postcode in a country, grouped by region.
+- name: PostcodeResponse
+  fields: 2
+  description: One postcode.
+- name: PostcodesResponse
+  fields: 2
+  description: The postcode index.
+- name: Problem
+  fields: 4
+  description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about
+    it.
+- name: Region
+  fields: 3
+  description: A state, province or other first level division.
+- name: RegionDetail
+  fields: 4
+  description: A region and a page of its suburbs.
+- name: RegionPostcodes
+  fields: 2
+  description: One region's postcodes.
+- name: RegionResponse
+  fields: 2
+  description: One region.
+- name: RegionSummary
+  fields: 5
+  description: A region and how much it holds.
+- name: Review
+  fields: 6
+  description: One approved review.
+- name: ReviewSummary
+  fields: 3
+  description: What visitors said, summarised.
+- name: Reviews
+  fields: 2
+  description: 'Approved reviews: a summary and the most recent.'
+- name: SearchHit
+  fields: 11
+  description: A suburb or a place matching what was typed, with enough to link to its page.
+- name: SearchResponse
+  fields: 2
+  description: Matches, best first.
+relationships:
+- from: CountryDetail
+  to: Country
+  type: has_one
+  via: country
+- from: CountryDetail
+  to: RegionSummary
+  type: has_many
+  via: regions
+- from: RegionDetail
+  to: Country
+  type: has_one
+  via: country
+- from: RegionDetail
+  to: Region
+  type: has_one
+  via: region
+- from: RegionDetail
+  to: LocalitySummary
+  type: has_many
+  via: localities
+- from: CategoryHub
+  to: Country
+  type: has_one
+  via: country
+- from: CategoryHub
+  to: RegionSummary
+  type: has_many
+  via: regions
+- from: CategoryHub
+  to: LocalityLink
+  type: has_many
+  via: localities
+- from: RegionPostcodes
+  to: Region
+  type: has_one
+  via: region
+- from: RegionPostcodes
+  to: PostcodeEntry
+  type: has_many
+  via: entries
+- from: PostcodeIndex
+  to: Country
+  type: has_one
+  via: country
+- from: PostcodeIndex
+  to: RegionPostcodes
+  type: has_many
+  via: regions
+- from: PostcodeDetail
+  to: Country
+  type: has_one
+  via: country
+- from: PostcodeDetail
+  to: Region
+  type: has_one
+  via: region
+- from: PostcodeDetail
+  to: LocalityLink
+  type: has_many
+  via: localities
+- from: LocalityDetail
+  to: Country
+  type: has_one
+  via: country
+- from: LocalityDetail
+  to: Region
+  type: has_one
+  via: region
+- from: LocalityDetail
+  to: Locality
+  type: has_one
+  via: locality
+- from: LocalityDetail
+  to: Facet
+  type: has_many
+  via: categories
+- from: LocalityDetail
+  to: Facet
+  type: has_many
+  via: brands
+- from: LocalityDetail
+  to: Place
+  type: has_many
+  via: places
+- from: LocalityDetail
+  to: LocalityLink
+  type: has_many
+  via: neighbours
+- from: Reviews
+  to: ReviewSummary
+  type: has_one
+  via: summary
+- from: Reviews
+  to: Review
+  type: has_many
+  via: recent
+- from: PlaceDetail
+  to: Country
+  type: has_one
+  via: country
+- from: PlaceDetail
+  to: Region
+  type: has_one
+  via: region
+- from: PlaceDetail
+  to: Locality
+  type: has_one
+  via: locality
+- from: PlaceDetail
+  to: Place
+  type: has_one
+  via: place
+- from: PlaceDetail
+  to: PlaceLink
+  type: has_many
+  via: nearby
+- from: PlaceDetail
+  to: Reviews
+  type: has_one
+  via: reviews
+- from: PlaceDetail
+  to: Photo
+  type: has_many
+  via: photos
+- from: SearchResponse
+  to: SearchHit
+  type: has_many
+  via: data
+- from: CountriesResponse
+  to: CountrySummary
+  type: has_many
+  via: data
+- from: CountryResponse
+  to: CountryDetail
+  type: has_one
+  via: data
+- from: RegionResponse
+  to: RegionDetail
+  type: has_one
+  via: data
+- from: CategoryResponse
+  to: CategoryHub
+  type: has_one
+  via: data
+- from: PostcodesResponse
+  to: PostcodeIndex
+  type: has_one
+  via: data
+- from: PostcodeResponse
+  to: PostcodeDetail
+  type: has_one
+  via: data
+- from: LocalityResponse
+  to: LocalityDetail
+  type: has_one
+  via: data
+- from: PlacesResponse
+  to: Place
+  type: has_many
+  via: data
+- from: PlaceResponse
+  to: PlaceDetail
+  type: has_one
+  via: data
+- from: NearbyResponse
+  to: NearbyPlace
+  type: has_many
+  via: data

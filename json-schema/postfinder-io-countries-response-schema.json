@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/postfinder-io/main/json-schema/postfinder-io-countries-response-schema.json",
+  "title": "CountriesResponse",
+  "description": "Every country covered.",
+  "x-generated": "2026-10-02",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/postfinder-io-openapi.json#/components/schemas/CountriesResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Countries.",
+      "items": {
+        "$ref": "#/$defs/CountrySummary"
+      }
+    },
+    "generated_at": {
+      "type": "string",
+      "description": "When the answer was made. Answers are cached at the edge, so it can be up to an hour old.",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "data",
+    "generated_at"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "CountrySummary": {
+      "type": "object",
+      "description": "A country and how much the directory holds for it.",
+      "properties": {
+        "iso2": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 code."
+        },
+        "slug": {
+          "type": "string",
+          "description": "The country as the site's URLs write it."
+        },
+        "name": {
+          "type": "string",
+          "description": "The country's name."
+        },
+        "region_count": {
+          "type": "integer",
+          "description": "Regions with a page."
+        },
+        "locality_count": {
+          "type": "integer",
+          "description": "Suburbs with a page."
+        },
+        "place_count": {
+          "type": "integer",
+          "description": "Locations held."
+        }
+      },
+      "required": [
+        "iso2",
+        "slug",
+        "name",
+        "region_count",
+        "locality_count",
+        "place_count"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

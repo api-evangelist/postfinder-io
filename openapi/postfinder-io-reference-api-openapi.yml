@@ -1,0 +1,31 @@
+openapi: 3.2.0
+info:
+  title: PostFinder Reference API
+  version: 1.0.0
+  description: 'The directory behind postfinder.io, as an API: post offices, post boxes, parcel lockers, drop off and collection points in Australia, New Zealand, the United Kingdom, the United States and Canada, and the suburbs and postcodes they sit in.'
+  contact:
+    name: PostFinder
+    url: https://postfinder.io/en/contact/
+servers:
+- url: https://api.postfinder.io
+  description: Production
+security: []
+tags:
+- name: Reference
+  description: This document.
+paths:
+  /v1/openapi.json:
+    get:
+      tags:
+      - Reference
+      operationId: openapi
+      summary: This document
+      description: The OpenAPI document for this host.
+      parameters: []
+      responses:
+        '200':
+          description: This document.
+          content:
+            application/json:
+              schema:
+                type: object

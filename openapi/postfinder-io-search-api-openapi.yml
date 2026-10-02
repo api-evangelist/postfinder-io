@@ -1,0 +1,120 @@
+openapi: 3.2.0
+info:
+  title: PostFinder Search API
+  version: 1.0.0
+  description: 'The directory behind postfinder.io, as an API: post offices, post boxes, parcel lockers, drop off and collection points in Australia, New Zealand, the United Kingdom, the United States and Canada, and the suburbs and postcodes they sit in.'
+  contact:
+    name: PostFinder
+    url: https://postfinder.io/en/contact/
+servers:
+- url: https://api.postfinder.io
+  description: Production
+security: []
+tags:
+- name: Search
+  description: Turn what somebody typed into a suburb or a place.
+paths:
+  /v1/search:
+    get:
+      tags:
+      - Search
+      operationId: search
+      summary: Suggest suburbs and places as someone types
+      description: 'The site''s own search box, as an endpoint.
+
+
+        Under two characters answers an empty list rather than matching most of the table; that is an answer, not an error. Debounce by at least 150ms in the client, since firing on every keystroke spends bandwidth for no better answer.
+
+
+        Rows come back most useful first, and each carries enough to build a link to the page it names without a second request.'
+      parameters:
+      - name: q
+        in: query
+        required: true
+        description: What has been typed so far.
+        schema:
+          type: string
+        example: coburg
+      - name: limit
+        in: query
+        required: false
+        description: How many rows. Outside 1 to 50, the default applies.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 10
+      responses:
+        '200':
+          description: Matching rows, best first. Empty for a term under two characters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+components:
+  schemas:
+    SearchResponse:
+      type: object
+      description: Matches, best first.
+      properties:
+        data:
+          type: array
+          description: Suburbs and places.
+          items:
+            $ref: '#/components/schemas/SearchHit'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
+      additionalProperties: false
+    SearchHit:
+      type: object
+      description: A suburb or a place matching what was typed, with enough to link to its page.
+      properties:
+        kind:
+          type: string
+          description: A suburb or a place.
+          enum:
+          - locality
+          - place
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        name:
+          type: string
+          description: The name to show.
+        country:
+          type: string
+          description: Country slug.
+        region:
+          type: string
+          description: Region slug.
+        locality:
+          type: string
+          description: For a place, its suburb's slug.
+        place_count:
+          type: integer
+          description: For a suburb, how many locations it holds.
+        postcode:
+          type: string
+          description: The suburb's postcode, for a suburb or a place, where held.
+        lat:
+          type: number
+          description: Latitude, where held.
+        lng:
+          type: number
+          description: Longitude, where held.
+        score:
+          type: number
+          description: How well it matched, 0 to 1. Rows come best first.
+      required:
+      - kind
+      - slug
+      - name
+      - country
+      - region
+      - score
+      additionalProperties: false

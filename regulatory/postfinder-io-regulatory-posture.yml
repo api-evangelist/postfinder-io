@@ -1,0 +1,38 @@
+generated: '2026-10-02'
+method: probed
+source: https://postfinder.io/en/privacy/
+signals:
+  data_subject_request:
+    evidence:
+      - source: https://postfinder.io/en/privacy/
+        http_status: 200
+        fetched: /tmp/privacy.html
+        quote: "What we do keep is listed below, with how long, and you can delete your account yourself at any time."
+        url: https://postfinder.io/en/privacy/
+        section: The short version
+        note: Users can request deletion of their account and data.
+  data_retention:
+    evidence:
+      - source: https://postfinder.io/en/privacy/
+        http_status: 200
+        fetched: /tmp/privacy.html
+        quote: "These go into server logs, which are kept for at most 30 days and then deleted."
+        url: https://postfinder.io/en/privacy/
+        section: When you read the site
+        note: Server logs are retained for up to 30 days.
+      - source: https://postfinder.io/en/privacy/
+        http_status: 200
+        fetched: /tmp/privacy.html
+        quote: "We keep the email for as long as it takes to answer you, and to keep a record if you told us something on the site was wrong."
+        url: https://postfinder.io/en/privacy/
+        section: If you write to us
+        note: Email communications are retained until the issue is resolved.
+  subprocessors:
+    evidence:
+      - source: https://postfinder.io/en/privacy/
+        http_status: 200
+        fetched: /tmp/privacy.html
+        quote: "These services handle data for the site, each for one job: Cloudflare ... DigitalOcean ... Resend ... Google Workspace ... OpenFreeMap ... Have I Been Pwned"
+        url: https://postfinder.io/en/privacy/
+        section: Who else is involved
+        note: Lists third‑party processors used.
