@@ -1,7 +1,7 @@
 {
   "provider": "postfinder-io",
   "sources": [
-    "postfinder-io-openapi.json"
+    "_original/postfinder-io-openapi.json"
   ],
   "outputs": [
     "postfinder-io-nearby-api-openapi.yml",
@@ -10,14 +10,19 @@
     "postfinder-io-reference-api-openapi.yml",
     "postfinder-io-search-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/postfinder-io-openapi.json"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "postfinder-io-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "apis.yml register: written (+5 apis, 5 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "postfinder-io-nearby-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "postfinder-io-places-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "postfinder-io-postcodes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "postfinder-io-reference-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "postfinder-io-search-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

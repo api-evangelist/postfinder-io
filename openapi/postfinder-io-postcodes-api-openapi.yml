@@ -95,27 +95,82 @@ components:
       - region
       - entries
       additionalProperties: false
-    Problem:
+    PostcodeDetail:
       type: object
-      description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
+      description: One postcode and the suburbs it covers.
       properties:
-        type:
+        country:
+          $ref: '#/components/schemas/Country'
+        region:
+          $ref: '#/components/schemas/Region'
+        postcode:
           type: string
-          description: Always about:blank.
-        title:
-          type: string
-          description: What went wrong, in a few words.
-        status:
+          description: The postcode.
+        total:
           type: integer
-          description: The HTTP status, repeated.
-        detail:
-          type: string
-          description: What to do about it. May be empty.
+          description: Places across every suburb it covers.
+        localities:
+          type: array
+          description: The suburbs it covers, busiest first.
+          items:
+            $ref: '#/components/schemas/LocalityLink'
       required:
-      - type
-      - title
-      - status
-      - detail
+      - country
+      - region
+      - postcode
+      - total
+      - localities
+      additionalProperties: false
+    PostcodeResponse:
+      type: object
+      description: One postcode.
+      properties:
+        data:
+          $ref: '#/components/schemas/PostcodeDetail'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
+      additionalProperties: false
+    PostcodeIndex:
+      type: object
+      description: Every postcode in a country, grouped by region.
+      properties:
+        country:
+          $ref: '#/components/schemas/Country'
+        total:
+          type: integer
+          description: How many suburbs are listed.
+        regions:
+          type: array
+          description: By region.
+          items:
+            $ref: '#/components/schemas/RegionPostcodes'
+      required:
+      - country
+      - total
+      - regions
+      additionalProperties: false
+    Country:
+      type: object
+      description: A country the directory covers.
+      properties:
+        iso2:
+          type: string
+          description: ISO 3166-1 alpha-2 code.
+        slug:
+          type: string
+          description: 'The country as postfinder.io''s URLs write it: australia, new-zealand.'
+        name:
+          type: string
+          description: The country's name.
+      required:
+      - iso2
+      - slug
+      - name
       additionalProperties: false
     LocalityLink:
       type: object
@@ -147,20 +202,6 @@ components:
       - place_count
       - distance_km
       additionalProperties: false
-    PostcodeResponse:
-      type: object
-      description: One postcode.
-      properties:
-        data:
-          $ref: '#/components/schemas/PostcodeDetail'
-        generated_at:
-          type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
     Region:
       type: object
       description: A state, province or other first level division.
@@ -177,57 +218,6 @@ components:
       required:
       - slug
       - name
-      additionalProperties: false
-    PostcodesResponse:
-      type: object
-      description: The postcode index.
-      properties:
-        data:
-          $ref: '#/components/schemas/PostcodeIndex'
-        generated_at:
-          type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
-    Country:
-      type: object
-      description: A country the directory covers.
-      properties:
-        iso2:
-          type: string
-          description: ISO 3166-1 alpha-2 code.
-        slug:
-          type: string
-          description: 'The country as postfinder.io''s URLs write it: australia, new-zealand.'
-        name:
-          type: string
-          description: The country's name.
-      required:
-      - iso2
-      - slug
-      - name
-      additionalProperties: false
-    PostcodeIndex:
-      type: object
-      description: Every postcode in a country, grouped by region.
-      properties:
-        country:
-          $ref: '#/components/schemas/Country'
-        total:
-          type: integer
-          description: How many suburbs are listed.
-        regions:
-          type: array
-          description: By region.
-          items:
-            $ref: '#/components/schemas/RegionPostcodes'
-      required:
-      - country
-      - total
-      - regions
       additionalProperties: false
     PostcodeEntry:
       type: object
@@ -251,29 +241,39 @@ components:
       - name
       - place_count
       additionalProperties: false
-    PostcodeDetail:
+    Problem:
       type: object
-      description: One postcode and the suburbs it covers.
+      description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
       properties:
-        country:
-          $ref: '#/components/schemas/Country'
-        region:
-          $ref: '#/components/schemas/Region'
-        postcode:
+        type:
           type: string
-          description: The postcode.
-        total:
+          description: Always about:blank.
+        title:
+          type: string
+          description: What went wrong, in a few words.
+        status:
           type: integer
-          description: Places across every suburb it covers.
-        localities:
-          type: array
-          description: The suburbs it covers, busiest first.
-          items:
-            $ref: '#/components/schemas/LocalityLink'
+          description: The HTTP status, repeated.
+        detail:
+          type: string
+          description: What to do about it. May be empty.
       required:
-      - country
-      - region
-      - postcode
-      - total
-      - localities
+      - type
+      - title
+      - status
+      - detail
+      additionalProperties: false
+    PostcodesResponse:
+      type: object
+      description: The postcode index.
+      properties:
+        data:
+          $ref: '#/components/schemas/PostcodeIndex'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
       additionalProperties: false

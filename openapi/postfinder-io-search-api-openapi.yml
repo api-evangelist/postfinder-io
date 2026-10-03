@@ -53,23 +53,6 @@ paths:
                 $ref: '#/components/schemas/SearchResponse'
 components:
   schemas:
-    SearchResponse:
-      type: object
-      description: Matches, best first.
-      properties:
-        data:
-          type: array
-          description: Suburbs and places.
-          items:
-            $ref: '#/components/schemas/SearchHit'
-        generated_at:
-          type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
     SearchHit:
       type: object
       description: A suburb or a place matching what was typed, with enough to link to its page.
@@ -117,4 +100,21 @@ components:
       - country
       - region
       - score
+      additionalProperties: false
+    SearchResponse:
+      type: object
+      description: Matches, best first.
+      properties:
+        data:
+          type: array
+          description: Suburbs and places.
+          items:
+            $ref: '#/components/schemas/SearchHit'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
       additionalProperties: false

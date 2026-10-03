@@ -76,45 +76,6 @@ paths:
                 $ref: '#/components/schemas/Problem'
 components:
   schemas:
-    Problem:
-      type: object
-      description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
-      properties:
-        type:
-          type: string
-          description: Always about:blank.
-        title:
-          type: string
-          description: What went wrong, in a few words.
-        status:
-          type: integer
-          description: The HTTP status, repeated.
-        detail:
-          type: string
-          description: What to do about it. May be empty.
-      required:
-      - type
-      - title
-      - status
-      - detail
-      additionalProperties: false
-    NearbyResponse:
-      type: object
-      description: The nearest places, nearest first.
-      properties:
-        data:
-          type: array
-          description: Up to 30 places within 50 km.
-          items:
-            $ref: '#/components/schemas/NearbyPlace'
-        generated_at:
-          type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
     NearbyPlace:
       type: object
       description: A place, with where it sits and how far it is from the point asked about.
@@ -191,4 +152,43 @@ components:
       - region
       - locality
       - distance_km
+      additionalProperties: false
+    Problem:
+      type: object
+      description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
+      properties:
+        type:
+          type: string
+          description: Always about:blank.
+        title:
+          type: string
+          description: What went wrong, in a few words.
+        status:
+          type: integer
+          description: The HTTP status, repeated.
+        detail:
+          type: string
+          description: What to do about it. May be empty.
+      required:
+      - type
+      - title
+      - status
+      - detail
+      additionalProperties: false
+    NearbyResponse:
+      type: object
+      description: The nearest places, nearest first.
+      properties:
+        data:
+          type: array
+          description: Up to 30 places within 50 km.
+          items:
+            $ref: '#/components/schemas/NearbyPlace'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
       additionalProperties: false
