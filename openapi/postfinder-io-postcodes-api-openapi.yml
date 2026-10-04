@@ -80,47 +80,6 @@ paths:
                 $ref: '#/components/schemas/Problem'
 components:
   schemas:
-    RegionPostcodes:
-      type: object
-      description: One region's postcodes.
-      properties:
-        region:
-          $ref: '#/components/schemas/Region'
-        entries:
-          type: array
-          description: Its suburbs and their postcodes.
-          items:
-            $ref: '#/components/schemas/PostcodeEntry'
-      required:
-      - region
-      - entries
-      additionalProperties: false
-    PostcodeDetail:
-      type: object
-      description: One postcode and the suburbs it covers.
-      properties:
-        country:
-          $ref: '#/components/schemas/Country'
-        region:
-          $ref: '#/components/schemas/Region'
-        postcode:
-          type: string
-          description: The postcode.
-        total:
-          type: integer
-          description: Places across every suburb it covers.
-        localities:
-          type: array
-          description: The suburbs it covers, busiest first.
-          items:
-            $ref: '#/components/schemas/LocalityLink'
-      required:
-      - country
-      - region
-      - postcode
-      - total
-      - localities
-      additionalProperties: false
     PostcodeResponse:
       type: object
       description: One postcode.
@@ -135,42 +94,20 @@ components:
       - data
       - generated_at
       additionalProperties: false
-    PostcodeIndex:
+    RegionPostcodes:
       type: object
-      description: Every postcode in a country, grouped by region.
+      description: One region's postcodes.
       properties:
-        country:
-          $ref: '#/components/schemas/Country'
-        total:
-          type: integer
-          description: How many suburbs are listed.
-        regions:
+        region:
+          $ref: '#/components/schemas/Region'
+        entries:
           type: array
-          description: By region.
+          description: Its suburbs and their postcodes.
           items:
-            $ref: '#/components/schemas/RegionPostcodes'
+            $ref: '#/components/schemas/PostcodeEntry'
       required:
-      - country
-      - total
-      - regions
-      additionalProperties: false
-    Country:
-      type: object
-      description: A country the directory covers.
-      properties:
-        iso2:
-          type: string
-          description: ISO 3166-1 alpha-2 code.
-        slug:
-          type: string
-          description: 'The country as postfinder.io''s URLs write it: australia, new-zealand.'
-        name:
-          type: string
-          description: The country's name.
-      required:
-      - iso2
-      - slug
-      - name
+      - region
+      - entries
       additionalProperties: false
     LocalityLink:
       type: object
@@ -202,23 +139,6 @@ components:
       - place_count
       - distance_km
       additionalProperties: false
-    Region:
-      type: object
-      description: A state, province or other first level division.
-      properties:
-        slug:
-          type: string
-          description: The URL segment this row has on postfinder.io.
-        code:
-          type: string
-          description: 'The short code, where the country has them: VIC, NSW. Absent where it has none.'
-        name:
-          type: string
-          description: The region's name.
-      required:
-      - slug
-      - name
-      additionalProperties: false
     PostcodeEntry:
       type: object
       description: A suburb and the postcode people write for it.
@@ -241,6 +161,24 @@ components:
       - name
       - place_count
       additionalProperties: false
+    Country:
+      type: object
+      description: A country the directory covers.
+      properties:
+        iso2:
+          type: string
+          description: ISO 3166-1 alpha-2 code.
+        slug:
+          type: string
+          description: 'The country as postfinder.io''s URLs write it: australia, new-zealand.'
+        name:
+          type: string
+          description: The country's name.
+      required:
+      - iso2
+      - slug
+      - name
+      additionalProperties: false
     Problem:
       type: object
       description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
@@ -262,6 +200,68 @@ components:
       - title
       - status
       - detail
+      additionalProperties: false
+    Region:
+      type: object
+      description: A state, province or other first level division.
+      properties:
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        code:
+          type: string
+          description: 'The short code, where the country has them: VIC, NSW. Absent where it has none.'
+        name:
+          type: string
+          description: The region's name.
+      required:
+      - slug
+      - name
+      additionalProperties: false
+    PostcodeDetail:
+      type: object
+      description: One postcode and the suburbs it covers.
+      properties:
+        country:
+          $ref: '#/components/schemas/Country'
+        region:
+          $ref: '#/components/schemas/Region'
+        postcode:
+          type: string
+          description: The postcode.
+        total:
+          type: integer
+          description: Places across every suburb it covers.
+        localities:
+          type: array
+          description: The suburbs it covers, busiest first.
+          items:
+            $ref: '#/components/schemas/LocalityLink'
+      required:
+      - country
+      - region
+      - postcode
+      - total
+      - localities
+      additionalProperties: false
+    PostcodeIndex:
+      type: object
+      description: Every postcode in a country, grouped by region.
+      properties:
+        country:
+          $ref: '#/components/schemas/Country'
+        total:
+          type: integer
+          description: How many suburbs are listed.
+        regions:
+          type: array
+          description: By region.
+          items:
+            $ref: '#/components/schemas/RegionPostcodes'
+      required:
+      - country
+      - total
+      - regions
       additionalProperties: false
     PostcodesResponse:
       type: object
