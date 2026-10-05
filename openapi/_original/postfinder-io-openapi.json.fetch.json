@@ -1,0 +1,12 @@
+{
+ "url": "https://api.postfinder.io/v1/openapi.json",
+ "requested_url": "https://api.postfinder.io/v1/openapi.json",
+ "status": 200,
+ "content_type": "application/json; charset=utf-8",
+ "bytes": 59089,
+ "sha256": "3257da2e3c3484ae276f3c3b0fa8edde1380f30095eae1a8958018cbb4c29afc",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
