@@ -19,6 +19,6 @@
     registered_name: io.postfinder/places
     register_id: io.postfinder/places
     detected_by: sweep-agent-tools.py
-    detected: '2026-10-14'
+    detected: '2026-10-15'
   status: not-a-workflow
   arazzo: null
