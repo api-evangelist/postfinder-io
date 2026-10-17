@@ -289,214 +289,6 @@ paths:
                 $ref: '#/components/schemas/Problem'
 components:
   schemas:
-    LocalityResponse:
-      type: object
-      description: One suburb.
-      properties:
-        data:
-          $ref: '#/components/schemas/LocalityDetail'
-        generated_at:
-          type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
-    CountrySummary:
-      type: object
-      description: A country and how much the directory holds for it.
-      properties:
-        iso2:
-          type: string
-          description: ISO 3166-1 alpha-2 code.
-        slug:
-          type: string
-          description: The country as the site's URLs write it.
-        name:
-          type: string
-          description: The country's name.
-        region_count:
-          type: integer
-          description: Regions with a page.
-        locality_count:
-          type: integer
-          description: Suburbs with a page.
-        place_count:
-          type: integer
-          description: Locations held.
-      required:
-      - iso2
-      - slug
-      - name
-      - region_count
-      - locality_count
-      - place_count
-      additionalProperties: false
-    LocalityLink:
-      type: object
-      description: Another suburb, with enough to link to its page.
-      properties:
-        country:
-          type: string
-          description: Country slug.
-        region:
-          type: string
-          description: Region slug.
-        slug:
-          type: string
-          description: The URL segment this row has on postfinder.io.
-        name:
-          type: string
-          description: The suburb's name.
-        place_count:
-          type: integer
-          description: Locations held.
-        distance_km:
-          type: number
-          description: Distance in kilometres from the suburb asked about; 0 where distance is not the ordering.
-      required:
-      - country
-      - region
-      - slug
-      - name
-      - place_count
-      - distance_km
-      additionalProperties: false
-    PlacesResponse:
-      type: object
-      description: Places in a suburb.
-      properties:
-        data:
-          type: array
-          description: Places, by name.
-          items:
-            $ref: '#/components/schemas/Place'
-        generated_at:
-          type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
-        next_cursor:
-          type: string
-          description: 'Reserved for paging. Never set today: the first page is the whole answer, up to limit.'
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
-    RegionDetail:
-      type: object
-      description: A region and a page of its suburbs.
-      properties:
-        country:
-          $ref: '#/components/schemas/Country'
-        region:
-          $ref: '#/components/schemas/Region'
-        localities:
-          type: array
-          description: This page of the region's suburbs, alphabetical.
-          items:
-            $ref: '#/components/schemas/LocalitySummary'
-        locality_total:
-          type: integer
-          description: How many suburbs the region has in all, for paging.
-      required:
-      - country
-      - region
-      - localities
-      - locality_total
-      additionalProperties: false
-    Locality:
-      type: object
-      description: A suburb or town.
-      properties:
-        slug:
-          type: string
-          description: The URL segment this row has on postfinder.io.
-        name:
-          type: string
-          description: The suburb's name.
-        postcode:
-          type: string
-          description: The postcode people write for it. Absent where the country's postcodes are not held.
-        lat:
-          type: number
-          description: Latitude of the suburb's centre, where held.
-        lng:
-          type: number
-          description: Longitude of the suburb's centre, where held.
-        place_count:
-          type: integer
-          description: How many locations it holds.
-      required:
-      - slug
-      - name
-      - place_count
-      additionalProperties: false
-    CountryResponse:
-      type: object
-      description: One country.
-      properties:
-        data:
-          $ref: '#/components/schemas/CountryDetail'
-        generated_at:
-          type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
-    Reviews:
-      type: object
-      description: 'Approved reviews: a summary and the most recent.'
-      properties:
-        summary:
-          $ref: '#/components/schemas/ReviewSummary'
-        recent:
-          type: array
-          description: The most recent, newest first.
-          items:
-            $ref: '#/components/schemas/Review'
-      required:
-      - summary
-      - recent
-      additionalProperties: false
-    CategoryResponse:
-      type: object
-      description: One category across a country.
-      properties:
-        data:
-          $ref: '#/components/schemas/CategoryHub'
-        generated_at:
-          type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
-    Problem:
-      type: object
-      description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
-      properties:
-        type:
-          type: string
-          description: Always about:blank.
-        title:
-          type: string
-          description: What went wrong, in a few words.
-        status:
-          type: integer
-          description: The HTTP status, repeated.
-        detail:
-          type: string
-          description: What to do about it. May be empty.
-      required:
-      - type
-      - title
-      - status
-      - detail
-      additionalProperties: false
     Review:
       type: object
       description: One approved review.
@@ -535,146 +327,55 @@ components:
       - rating
       - created_at
       additionalProperties: false
-    Facet:
+    CountrySummary:
       type: object
-      description: One value and how many places have it.
+      description: A country and how much the directory holds for it.
       properties:
-        key:
+        iso2:
           type: string
-          description: The category or brand key.
-        count:
-          type: integer
-          description: How many places.
-      required:
-      - key
-      - count
-      additionalProperties: false
-    RegionSummary:
-      type: object
-      description: A region and how much it holds.
-      properties:
+          description: ISO 3166-1 alpha-2 code.
         slug:
           type: string
-          description: The URL segment this row has on postfinder.io.
-        code:
-          type: string
-          description: The short code, where the country has them.
+          description: The country as the site's URLs write it.
         name:
           type: string
-          description: The region's name.
+          description: The country's name.
+        region_count:
+          type: integer
+          description: Regions with a page.
         locality_count:
           type: integer
           description: Suburbs with a page.
         place_count:
           type: integer
-          description: Locations held (on a category page, of that category only).
+          description: Locations held.
       required:
+      - iso2
       - slug
       - name
+      - region_count
       - locality_count
       - place_count
       additionalProperties: false
-    PlaceDetail:
+    PlacesResponse:
       type: object
-      description: One place in full, with where it sits, what is close by, reviews and photos.
-      properties:
-        country:
-          $ref: '#/components/schemas/Country'
-        region:
-          $ref: '#/components/schemas/Region'
-        locality:
-          $ref: '#/components/schemas/Locality'
-        place:
-          $ref: '#/components/schemas/Place'
-        nearby:
-          type: array
-          description: Other places close by, nearest first.
-          items:
-            $ref: '#/components/schemas/PlaceLink'
-        reviews:
-          $ref: '#/components/schemas/Reviews'
-        photos:
-          type: array
-          description: Approved photos, newest first.
-          items:
-            $ref: '#/components/schemas/Photo'
-      required:
-      - country
-      - region
-      - locality
-      - place
-      - nearby
-      - reviews
-      - photos
-      additionalProperties: false
-    PlaceResponse:
-      type: object
-      description: One place.
+      description: Places in a suburb.
       properties:
         data:
-          $ref: '#/components/schemas/PlaceDetail'
+          type: array
+          description: Places, by name.
+          items:
+            $ref: '#/components/schemas/Place'
         generated_at:
           type: string
           description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
           format: date-time
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
-    CountryDetail:
-      type: object
-      description: A country and its regions.
-      properties:
-        country:
-          $ref: '#/components/schemas/Country'
-        regions:
-          type: array
-          description: Every region with a page, largest first.
-          items:
-            $ref: '#/components/schemas/RegionSummary'
-      required:
-      - country
-      - regions
-      additionalProperties: false
-    CountriesResponse:
-      type: object
-      description: Every country covered.
-      properties:
-        data:
-          type: array
-          description: Countries.
-          items:
-            $ref: '#/components/schemas/CountrySummary'
-        generated_at:
+        next_cursor:
           type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
+          description: 'Reserved for paging. Never set today: the first page is the whole answer, up to limit.'
       required:
       - data
       - generated_at
-      additionalProperties: false
-    ReviewSummary:
-      type: object
-      description: What visitors said, summarised.
-      properties:
-        count:
-          type: integer
-          description: Approved reviews.
-        average:
-          type:
-          - number
-          - 'null'
-          description: Mean rating out of five, or null with no rated reviews.
-        last_as_listed_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: When a visitor last found the place as listed, or null.
-      required:
-      - count
-      - average
-      - last_as_listed_at
       additionalProperties: false
     CategoryHub:
       type: object
@@ -712,35 +413,139 @@ components:
       - regions
       - localities
       additionalProperties: false
-    Photo:
+    CountriesResponse:
       type: object
-      description: An approved photo. Fetch it at https://postfinder.io/media/{id}.
+      description: Every country covered.
       properties:
-        id:
+        data:
+          type: array
+          description: Countries.
+          items:
+            $ref: '#/components/schemas/CountrySummary'
+        generated_at:
           type: string
-          description: Photo id.
-        credit:
-          type: string
-          description: Who took it, when they asked to be credited.
-        licence:
-          type: string
-          description: Its licence.
-        width:
-          type: integer
-          description: Pixels.
-        height:
-          type: integer
-          description: Pixels.
-        created_at:
-          type: string
-          description: When it was added.
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
           format: date-time
       required:
-      - id
-      - licence
-      - width
-      - height
-      - created_at
+      - data
+      - generated_at
+      additionalProperties: false
+    PlaceDetail:
+      type: object
+      description: One place in full, with where it sits, what is close by, reviews and photos.
+      properties:
+        country:
+          $ref: '#/components/schemas/Country'
+        region:
+          $ref: '#/components/schemas/Region'
+        locality:
+          $ref: '#/components/schemas/Locality'
+        place:
+          $ref: '#/components/schemas/Place'
+        nearby:
+          type: array
+          description: Other places close by, nearest first.
+          items:
+            $ref: '#/components/schemas/PlaceLink'
+        reviews:
+          $ref: '#/components/schemas/Reviews'
+        photos:
+          type: array
+          description: Approved photos, newest first.
+          items:
+            $ref: '#/components/schemas/Photo'
+      required:
+      - country
+      - region
+      - locality
+      - place
+      - nearby
+      - reviews
+      - photos
+      additionalProperties: false
+    Facet:
+      type: object
+      description: One value and how many places have it.
+      properties:
+        key:
+          type: string
+          description: The category or brand key.
+        count:
+          type: integer
+          description: How many places.
+      required:
+      - key
+      - count
+      additionalProperties: false
+    Locality:
+      type: object
+      description: A suburb or town.
+      properties:
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        name:
+          type: string
+          description: The suburb's name.
+        postcode:
+          type: string
+          description: The postcode people write for it. Absent where the country's postcodes are not held.
+        lat:
+          type: number
+          description: Latitude of the suburb's centre, where held.
+        lng:
+          type: number
+          description: Longitude of the suburb's centre, where held.
+        place_count:
+          type: integer
+          description: How many locations it holds.
+      required:
+      - slug
+      - name
+      - place_count
+      additionalProperties: false
+    RegionResponse:
+      type: object
+      description: One region.
+      properties:
+        data:
+          $ref: '#/components/schemas/RegionDetail'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
+      additionalProperties: false
+    CountryDetail:
+      type: object
+      description: A country and its regions.
+      properties:
+        country:
+          $ref: '#/components/schemas/Country'
+        regions:
+          type: array
+          description: Every region with a page, largest first.
+          items:
+            $ref: '#/components/schemas/RegionSummary'
+      required:
+      - country
+      - regions
+      additionalProperties: false
+    LocalityResponse:
+      type: object
+      description: One suburb.
+      properties:
+        data:
+          $ref: '#/components/schemas/LocalityDetail'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
       additionalProperties: false
     Country:
       type: object
@@ -760,41 +565,6 @@ components:
       - slug
       - name
       additionalProperties: false
-    RegionResponse:
-      type: object
-      description: One region.
-      properties:
-        data:
-          $ref: '#/components/schemas/RegionDetail'
-        generated_at:
-          type: string
-          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
-          format: date-time
-      required:
-      - data
-      - generated_at
-      additionalProperties: false
-    LocalitySummary:
-      type: object
-      description: A suburb in a region's list.
-      properties:
-        slug:
-          type: string
-          description: The URL segment this row has on postfinder.io.
-        name:
-          type: string
-          description: The suburb's name.
-        postcode:
-          type: string
-          description: Its postcode, where held.
-        place_count:
-          type: integer
-          description: Locations held.
-      required:
-      - slug
-      - name
-      - place_count
-      additionalProperties: false
     Region:
       type: object
       description: A state, province or other first level division.
@@ -812,58 +582,19 @@ components:
       - slug
       - name
       additionalProperties: false
-    PlaceLink:
+    PlaceResponse:
       type: object
-      description: Another place close by, with enough to link to its page.
+      description: One place.
       properties:
-        public_id:
+        data:
+          $ref: '#/components/schemas/PlaceDetail'
+        generated_at:
           type: string
-          description: The place's permanent id.
-          pattern: ^[a-z2-7]{8}$
-        slug:
-          type: string
-          description: The URL segment this row has on postfinder.io.
-        name:
-          type: string
-          description: The name on the door.
-        brand:
-          type: string
-          description: Operator key.
-        category:
-          type: string
-          description: What kind of place it is.
-          enum:
-          - post-offices
-          - post-boxes
-          - express-post-boxes
-          - parcel-lockers
-          - drop-off-points
-          - collection-points
-        address:
-          type: string
-          description: Street address, where held.
-        country:
-          type: string
-          description: Country slug.
-        region:
-          type: string
-          description: Region slug.
-        locality:
-          type: string
-          description: Suburb slug.
-        distance_km:
-          type: number
-          description: Straight line distance in kilometres.
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
       required:
-      - public_id
-      - slug
-      - name
-      - brand
-      - category
-      - country
-      - region
-      - locality
-      - distance_km
+      - data
+      - generated_at
       additionalProperties: false
     LocalityDetail:
       type: object
@@ -903,6 +634,27 @@ components:
       - brands
       - places
       - neighbours
+      additionalProperties: false
+    LocalitySummary:
+      type: object
+      description: A suburb in a region's list.
+      properties:
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        name:
+          type: string
+          description: The suburb's name.
+        postcode:
+          type: string
+          description: Its postcode, where held.
+        place_count:
+          type: integer
+          description: Locations held.
+      required:
+      - slug
+      - name
+      - place_count
       additionalProperties: false
     Place:
       type: object
@@ -964,4 +716,252 @@ components:
       - category
       - lat
       - lng
+      additionalProperties: false
+    RegionDetail:
+      type: object
+      description: A region and a page of its suburbs.
+      properties:
+        country:
+          $ref: '#/components/schemas/Country'
+        region:
+          $ref: '#/components/schemas/Region'
+        localities:
+          type: array
+          description: This page of the region's suburbs, alphabetical.
+          items:
+            $ref: '#/components/schemas/LocalitySummary'
+        locality_total:
+          type: integer
+          description: How many suburbs the region has in all, for paging.
+      required:
+      - country
+      - region
+      - localities
+      - locality_total
+      additionalProperties: false
+    PlaceLink:
+      type: object
+      description: Another place close by, with enough to link to its page.
+      properties:
+        public_id:
+          type: string
+          description: The place's permanent id.
+          pattern: ^[a-z2-7]{8}$
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        name:
+          type: string
+          description: The name on the door.
+        brand:
+          type: string
+          description: Operator key.
+        category:
+          type: string
+          description: What kind of place it is.
+          enum:
+          - post-offices
+          - post-boxes
+          - express-post-boxes
+          - parcel-lockers
+          - drop-off-points
+          - collection-points
+        address:
+          type: string
+          description: Street address, where held.
+        country:
+          type: string
+          description: Country slug.
+        region:
+          type: string
+          description: Region slug.
+        locality:
+          type: string
+          description: Suburb slug.
+        distance_km:
+          type: number
+          description: Straight line distance in kilometres.
+      required:
+      - public_id
+      - slug
+      - name
+      - brand
+      - category
+      - country
+      - region
+      - locality
+      - distance_km
+      additionalProperties: false
+    ReviewSummary:
+      type: object
+      description: What visitors said, summarised.
+      properties:
+        count:
+          type: integer
+          description: Approved reviews.
+        average:
+          type:
+          - number
+          - 'null'
+          description: Mean rating out of five, or null with no rated reviews.
+        last_as_listed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When a visitor last found the place as listed, or null.
+      required:
+      - count
+      - average
+      - last_as_listed_at
+      additionalProperties: false
+    CategoryResponse:
+      type: object
+      description: One category across a country.
+      properties:
+        data:
+          $ref: '#/components/schemas/CategoryHub'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
+      additionalProperties: false
+    RegionSummary:
+      type: object
+      description: A region and how much it holds.
+      properties:
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        code:
+          type: string
+          description: The short code, where the country has them.
+        name:
+          type: string
+          description: The region's name.
+        locality_count:
+          type: integer
+          description: Suburbs with a page.
+        place_count:
+          type: integer
+          description: Locations held (on a category page, of that category only).
+      required:
+      - slug
+      - name
+      - locality_count
+      - place_count
+      additionalProperties: false
+    Reviews:
+      type: object
+      description: 'Approved reviews: a summary and the most recent.'
+      properties:
+        summary:
+          $ref: '#/components/schemas/ReviewSummary'
+        recent:
+          type: array
+          description: The most recent, newest first.
+          items:
+            $ref: '#/components/schemas/Review'
+      required:
+      - summary
+      - recent
+      additionalProperties: false
+    Problem:
+      type: object
+      description: An RFC 7807 problem. The title says what went wrong and the detail, when present, what to do about it.
+      properties:
+        type:
+          type: string
+          description: Always about:blank.
+        title:
+          type: string
+          description: What went wrong, in a few words.
+        status:
+          type: integer
+          description: The HTTP status, repeated.
+        detail:
+          type: string
+          description: What to do about it. May be empty.
+      required:
+      - type
+      - title
+      - status
+      - detail
+      additionalProperties: false
+    CountryResponse:
+      type: object
+      description: One country.
+      properties:
+        data:
+          $ref: '#/components/schemas/CountryDetail'
+        generated_at:
+          type: string
+          description: When the answer was made. Answers are cached at the edge, so it can be up to an hour old.
+          format: date-time
+      required:
+      - data
+      - generated_at
+      additionalProperties: false
+    Photo:
+      type: object
+      description: An approved photo. Fetch it at https://postfinder.io/media/{id}.
+      properties:
+        id:
+          type: string
+          description: Photo id.
+        credit:
+          type: string
+          description: Who took it, when they asked to be credited.
+        licence:
+          type: string
+          description: Its licence.
+        width:
+          type: integer
+          description: Pixels.
+        height:
+          type: integer
+          description: Pixels.
+        created_at:
+          type: string
+          description: When it was added.
+          format: date-time
+      required:
+      - id
+      - licence
+      - width
+      - height
+      - created_at
+      additionalProperties: false
+    LocalityLink:
+      type: object
+      description: Another suburb, with enough to link to its page.
+      properties:
+        country:
+          type: string
+          description: Country slug.
+        region:
+          type: string
+          description: Region slug.
+        slug:
+          type: string
+          description: The URL segment this row has on postfinder.io.
+        name:
+          type: string
+          description: The suburb's name.
+        place_count:
+          type: integer
+          description: Locations held.
+        distance_km:
+          type: number
+          description: Distance in kilometres from the suburb asked about; 0 where distance is not the ordering.
+      required:
+      - country
+      - region
+      - slug
+      - name
+      - place_count
+      - distance_km
       additionalProperties: false
